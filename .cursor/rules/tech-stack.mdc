@@ -1,0 +1,91 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 🚨 TECH STACK GOVERNANCE RULES
+
+## 📋 **APPROVED TECH STACK - NO EXCEPTIONS**
+
+This project MUST strictly adhere to the following technology stack. **NO SUBSTITUTIONS OR ALTERNATIVES ARE ALLOWED** without explicit approval.
+
+### ✅ **MANDATORY TECHNOLOGIES**
+
+1. **Frontend Framework**: React 19+ (with TypeScript)
+2. **Build Tool**: Vite 5+
+3. **Routing**: TanStack Router (NOT react-router-dom)
+4. **State Management**: TanStack Query + React Context
+5. **Backend/Database**: Convex
+6. **UI Components**: ShadCN UI
+7. **Styling**: TailwindCSS v4
+8. **Animation**: Framer Motion
+9. **Icons**: Lucide React
+
+### ❌ **FORBIDDEN ALTERNATIVES**
+
+- **NO** `react-router-dom` (use `@tanstack/react-router`)
+- **NO** `redux` / `zustand` (use TanStack Query + Context)
+- **NO** `axios` (use Convex client)
+- **NO** `mui` / `antd` / `chakra` (use ShadCN only)
+- **NO** `bootstrap` / `bulma` (use TailwindCSS only)
+- **NO** `firebase` / `supabase` (use Convex only)
+
+### 🔧 **INSTALLATION COMMANDS**
+
+When adding packages, ONLY use these approved installations:
+
+```bash
+# Routing
+npm install @tanstack/react-router @tanstack/router-devtools @tanstack/router-vite-plugin
+
+# State Management  
+npm install @tanstack/react-query @tanstack/query-devtools
+
+# Backend
+npm install convex
+
+# UI Components (use ShadCN CLI)
+npx shadcn@latest add [component-name]
+
+# Animation
+npm install framer-motion
+
+# Icons
+npm install lucide-react
+
+# QR Codes (if needed)
+npm install qrcode.react
+
+# Utilities (if needed)
+npm install html-react-parser localforage canvas-confetti
+```
+
+### 🛡️ **ENFORCEMENT POLICY**
+
+- Any PR introducing forbidden packages will be **REJECTED**
+- Code reviews must verify tech stack compliance
+- Dependencies should be audited monthly
+- New requirements must be implemented using approved stack
+
+### 📚 **DOCUMENTATION REQUIREMENTS**
+
+- All components must use ShadCN patterns
+- Routing must follow TanStack Router conventions  
+- State management must use Convex + TanStack Query
+- Styling must use TailwindCSS utilities only
+
+---
+
+## 🎯 **VIOLATION RESPONSE PROTOCOL**
+
+If an unapproved technology is accidentally introduced:
+
+1. **IMMEDIATELY** remove the package
+2. Refactor code to use approved alternatives
+3. Update this document if new requirements emerge
+4. Get explicit approval before deviating
+
+---
+
+**Last Updated**: December 2024  
+**Next Review**: Quarterly 
