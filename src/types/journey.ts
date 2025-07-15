@@ -7,7 +7,7 @@ export type BusinessChallenge =
   | 'slow-checkout'
   | 'global-scaling'
   | 'payment-reliability'
-  | 'social-payments'
+  | 'social-commerce'
   | 'fraud-chargebacks'
 
 export type PayPalSolution = 'complete-payments' | 'braintree'

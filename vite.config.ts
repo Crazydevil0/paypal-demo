@@ -9,7 +9,10 @@ export default defineConfig({
   plugins: [
     react(), 
     tailwindcss(),
-    TanStackRouterVite()
+    TanStackRouterVite({
+      routesDirectory: './src/routes',
+      generatedRouteTree: './src/routeTree.gen.ts'
+    })
   ],
   resolve: {
     alias: {

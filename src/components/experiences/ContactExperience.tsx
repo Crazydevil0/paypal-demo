@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -21,9 +21,16 @@ import {
   MessageSquare
 } from 'lucide-react'
 import { useJourney } from '@/context/JourneyProvider'
+import { useNavigate } from '@tanstack/react-router'
+import { GradientHighlight } from '@/components/ui/GradientHighlight'
+import { useBackground } from '@/hooks/useBackground'
+import confetti from 'canvas-confetti'
 
 export default function ContactExperience() {
+  const navigate = useNavigate()
   const { data, updateData, saveJourney } = useJourney()
+  const { getBackgroundStyle, isGradientBackground } = useBackground()
+  
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -50,18 +57,23 @@ export default function ContactExperience() {
     // Save journey
     await saveJourney()
     
-    // Simulate API call
+    // Simulate API call and navigate to success
     setTimeout(() => {
       setIsSubmitting(false)
       setIsSubmitted(true)
+      navigate({ to: '/success' })
     }, 2000)
   }
 
   const isFormValid = formData.fullName && formData.email && formData.company
 
+  const backgroundStyle = getBackgroundStyle()
+
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-900 relative overflow-hidden flex items-center justify-center">
+      <div 
+        className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-900 relative overflow-hidden flex items-center justify-center"
+      >
         {/* Celebration Background */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-400 rounded-full filter blur-3xl animate-pulse"></div>
@@ -69,7 +81,7 @@ export default function ContactExperience() {
           <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-yellow-400 rounded-full filter blur-3xl animate-bounce"></div>
         </div>
 
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
+        <div className="relative z-10 text-center w-full max-w-1440 mx-auto px-4 md:px-8 xl:px-16">
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -187,73 +199,70 @@ export default function ContactExperience() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 relative overflow-hidden">
+    <div 
+      className={backgroundStyle.className}
+      style={backgroundStyle.style}
+    >
       {/* Animated Background */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-paypal-light rounded-full filter blur-3xl animate-pulse delay-1000"></div>
-      </div>
+      {isGradientBackground() && (
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-paypal-light rounded-full filter blur-3xl animate-pulse delay-1000"></div>
+        </div>
+      )}
 
-      <div className="relative z-10 container mx-auto px-6 py-12">
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 md:px-8 xl:px-12 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
-          <div className="inline-flex items-center gap-2 mb-6">
-            <CheckCircle2 className="w-6 h-6 text-paypal-light animate-pulse" />
-            <Badge className="text-lg px-4 py-2 bg-paypal-light/20 text-paypal-light border-paypal-light/30">
-              Passo Final
-            </Badge>
-            <CheckCircle2 className="w-6 h-6 text-paypal-light animate-pulse" />
-          </div>
+
           
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Quase{' '}
-            <span className="bg-gradient-to-r from-paypal-light to-white bg-clip-text text-transparent">
-              terminamos!
-            </span>
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+            Entre em contato para uma demonstração
+            <GradientHighlight> personalizada</GradientHighlight>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed">
             Deixe seus dados para receber uma demonstração personalizada da solução PayPal ideal para você
           </p>
         </motion.div>
 
-        <div className="max-w-2xl mx-auto">
+        <div className="w-full">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <Card className="p-8 bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
-              <CardHeader className="text-center pb-6">
-                <CardTitle className="text-2xl font-bold text-white flex items-center justify-center gap-3">
-                  <User className="w-8 h-8 text-paypal-light" />
+            <Card className="p-6 md:p-8 bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-xl md:text-2xl font-bold text-white flex items-center justify-center gap-3">
+                  <User className="w-6 h-6 md:w-8 md:h-8 text-paypal-light" />
                   Informações de Contato
                 </CardTitle>
               </CardHeader>
 
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4 md:space-y-6">
                 {/* Name and Email Row */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                      <User className="w-4 h-4" />
+                    <label className="text-base font-medium text-gray-300 flex items-center gap-2">
+                      <User className="w-5 h-5" />
                       Nome Completo *
                     </label>
                     <Input
                       value={formData.fullName}
                       onChange={(e) => handleInputChange('fullName', e.target.value)}
                       placeholder="Seu nome completo"
-                      className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light"
+                      className="h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                      <Mail className="w-4 h-4" />
+                    <label className="text-base font-medium text-gray-300 flex items-center gap-2">
+                      <Mail className="w-5 h-5" />
                       E-mail *
                     </label>
                     <Input
@@ -261,16 +270,16 @@ export default function ContactExperience() {
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       placeholder="seu@email.com"
-                      className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light"
+                      className="h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
                     />
                   </div>
                 </div>
 
                 {/* Phone and Company Row */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                      <Phone className="w-4 h-4" />
+                    <label className="text-base font-medium text-gray-300 flex items-center gap-2">
+                      <Phone className="w-5 h-5" />
                       Telefone
                     </label>
                     <Input
@@ -278,47 +287,47 @@ export default function ContactExperience() {
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       placeholder="(11) 99999-9999"
-                      className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light"
+                      className="h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                      <Building className="w-4 h-4" />
+                    <label className="text-base font-medium text-gray-300 flex items-center gap-2">
+                      <Building className="w-5 h-5" />
                       Empresa *
                     </label>
                     <Input
                       value={formData.company}
                       onChange={(e) => handleInputChange('company', e.target.value)}
                       placeholder="Nome da sua empresa"
-                      className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light"
+                      className="h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
                     />
                   </div>
                 </div>
 
                 {/* Message */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4" />
+                  <label className="text-base font-medium text-gray-300 flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
                     Mensagem (Opcional)
                   </label>
                   <Textarea
                     value={formData.message}
                     onChange={(e) => handleInputChange('message', e.target.value)}
                     placeholder="Conte mais sobre seus objetivos ou dúvidas específicas..."
-                    rows={4}
-                    className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light"
+                    rows={3}
+                    className="text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl min-h-[80px]"
                   />
                 </div>
 
                 {/* Submit Button */}
-                <div className="pt-6">
+                <div className="pt-4">
                   <Button
                     onClick={handleSubmit}
                     disabled={!isFormValid || isSubmitting}
                     size="lg"
                     className={`
-                      w-full py-6 text-lg font-semibold rounded-2xl shadow-2xl transition-all duration-300
+                      w-full h-16 text-xl font-semibold rounded-2xl shadow-2xl transition-all duration-300
                       ${isFormValid && !isSubmitting
                         ? 'bg-gradient-to-r from-paypal-primary to-paypal-light hover:from-paypal-light hover:to-paypal-primary text-white transform hover:scale-105 shadow-paypal-primary/30'
                         : 'bg-gray-600 text-gray-400 cursor-not-allowed'
@@ -327,14 +336,14 @@ export default function ContactExperience() {
                   >
                     {isSubmitting ? (
                       <div className="flex items-center gap-3">
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Enviando...
                       </div>
                     ) : isFormValid ? (
                       <div className="flex items-center gap-3">
-                        <Zap className="w-5 h-5" />
+                        <Zap className="w-6 h-6" />
                         Finalizar Jornada
-                        <ArrowRight className="w-5 h-5" />
+                        <ArrowRight className="w-6 h-6" />
                       </div>
                     ) : (
                       'Preencha os campos obrigatórios'
@@ -345,7 +354,7 @@ export default function ContactExperience() {
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="text-sm text-gray-400 mt-4 text-center"
+                      className="text-base text-gray-400 mt-4 text-center"
                     >
                       Nossa equipe entrará em contato em até 24 horas
                     </motion.p>

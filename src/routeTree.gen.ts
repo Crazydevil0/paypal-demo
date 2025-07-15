@@ -9,13 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SuccessRouteImport } from './routes/success'
 import { Route as SolutionsRouteImport } from './routes/solutions'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PpcpVideoRouteImport } from './routes/ppcp-video'
+import { Route as PpcpIntroRouteImport } from './routes/ppcp-intro'
+import { Route as PpcpBenefitsRouteImport } from './routes/ppcp-benefits'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as ChallengesRouteImport } from './routes/challenges'
+import { Route as BraintreeIntroRouteImport } from './routes/braintree-intro'
+import { Route as BraintreeBenefitsRouteImport } from './routes/braintree-benefits'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BraintreeVideoVideoTypeRouteImport } from './routes/braintree-video.$videoType'
 
+const SuccessRoute = SuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SolutionsRoute = SolutionsRouteImport.update({
   id: '/solutions',
   path: '/solutions',
@@ -24,6 +36,21 @@ const SolutionsRoute = SolutionsRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PpcpVideoRoute = PpcpVideoRouteImport.update({
+  id: '/ppcp-video',
+  path: '/ppcp-video',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PpcpIntroRoute = PpcpIntroRouteImport.update({
+  id: '/ppcp-intro',
+  path: '/ppcp-intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PpcpBenefitsRoute = PpcpBenefitsRouteImport.update({
+  id: '/ppcp-benefits',
+  path: '/ppcp-benefits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -41,69 +68,146 @@ const ChallengesRoute = ChallengesRouteImport.update({
   path: '/challenges',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BraintreeIntroRoute = BraintreeIntroRouteImport.update({
+  id: '/braintree-intro',
+  path: '/braintree-intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BraintreeBenefitsRoute = BraintreeBenefitsRouteImport.update({
+  id: '/braintree-benefits',
+  path: '/braintree-benefits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BraintreeVideoVideoTypeRoute = BraintreeVideoVideoTypeRouteImport.update({
+  id: '/braintree-video/$videoType',
+  path: '/braintree-video/$videoType',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/braintree-benefits': typeof BraintreeBenefitsRoute
+  '/braintree-intro': typeof BraintreeIntroRoute
   '/challenges': typeof ChallengesRoute
   '/channels': typeof ChannelsRoute
   '/contact': typeof ContactRoute
+  '/ppcp-benefits': typeof PpcpBenefitsRoute
+  '/ppcp-intro': typeof PpcpIntroRoute
+  '/ppcp-video': typeof PpcpVideoRoute
   '/profile': typeof ProfileRoute
   '/solutions': typeof SolutionsRoute
+  '/success': typeof SuccessRoute
+  '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/braintree-benefits': typeof BraintreeBenefitsRoute
+  '/braintree-intro': typeof BraintreeIntroRoute
   '/challenges': typeof ChallengesRoute
   '/channels': typeof ChannelsRoute
   '/contact': typeof ContactRoute
+  '/ppcp-benefits': typeof PpcpBenefitsRoute
+  '/ppcp-intro': typeof PpcpIntroRoute
+  '/ppcp-video': typeof PpcpVideoRoute
   '/profile': typeof ProfileRoute
   '/solutions': typeof SolutionsRoute
+  '/success': typeof SuccessRoute
+  '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/braintree-benefits': typeof BraintreeBenefitsRoute
+  '/braintree-intro': typeof BraintreeIntroRoute
   '/challenges': typeof ChallengesRoute
   '/channels': typeof ChannelsRoute
   '/contact': typeof ContactRoute
+  '/ppcp-benefits': typeof PpcpBenefitsRoute
+  '/ppcp-intro': typeof PpcpIntroRoute
+  '/ppcp-video': typeof PpcpVideoRoute
   '/profile': typeof ProfileRoute
   '/solutions': typeof SolutionsRoute
+  '/success': typeof SuccessRoute
+  '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/braintree-benefits'
+    | '/braintree-intro'
     | '/challenges'
     | '/channels'
     | '/contact'
+    | '/ppcp-benefits'
+    | '/ppcp-intro'
+    | '/ppcp-video'
     | '/profile'
     | '/solutions'
+    | '/success'
+    | '/braintree-video/$videoType'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/challenges' | '/channels' | '/contact' | '/profile' | '/solutions'
+  to:
+    | '/'
+    | '/braintree-benefits'
+    | '/braintree-intro'
+    | '/challenges'
+    | '/channels'
+    | '/contact'
+    | '/ppcp-benefits'
+    | '/ppcp-intro'
+    | '/ppcp-video'
+    | '/profile'
+    | '/solutions'
+    | '/success'
+    | '/braintree-video/$videoType'
   id:
     | '__root__'
     | '/'
+    | '/braintree-benefits'
+    | '/braintree-intro'
     | '/challenges'
     | '/channels'
     | '/contact'
+    | '/ppcp-benefits'
+    | '/ppcp-intro'
+    | '/ppcp-video'
     | '/profile'
     | '/solutions'
+    | '/success'
+    | '/braintree-video/$videoType'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BraintreeBenefitsRoute: typeof BraintreeBenefitsRoute
+  BraintreeIntroRoute: typeof BraintreeIntroRoute
   ChallengesRoute: typeof ChallengesRoute
   ChannelsRoute: typeof ChannelsRoute
   ContactRoute: typeof ContactRoute
+  PpcpBenefitsRoute: typeof PpcpBenefitsRoute
+  PpcpIntroRoute: typeof PpcpIntroRoute
+  PpcpVideoRoute: typeof PpcpVideoRoute
   ProfileRoute: typeof ProfileRoute
   SolutionsRoute: typeof SolutionsRoute
+  SuccessRoute: typeof SuccessRoute
+  BraintreeVideoVideoTypeRoute: typeof BraintreeVideoVideoTypeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/success': {
+      id: '/success'
+      path: '/success'
+      fullPath: '/success'
+      preLoaderRoute: typeof SuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/solutions': {
       id: '/solutions'
       path: '/solutions'
@@ -116,6 +220,27 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ppcp-video': {
+      id: '/ppcp-video'
+      path: '/ppcp-video'
+      fullPath: '/ppcp-video'
+      preLoaderRoute: typeof PpcpVideoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ppcp-intro': {
+      id: '/ppcp-intro'
+      path: '/ppcp-intro'
+      fullPath: '/ppcp-intro'
+      preLoaderRoute: typeof PpcpIntroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ppcp-benefits': {
+      id: '/ppcp-benefits'
+      path: '/ppcp-benefits'
+      fullPath: '/ppcp-benefits'
+      preLoaderRoute: typeof PpcpBenefitsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -139,6 +264,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChallengesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/braintree-intro': {
+      id: '/braintree-intro'
+      path: '/braintree-intro'
+      fullPath: '/braintree-intro'
+      preLoaderRoute: typeof BraintreeIntroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/braintree-benefits': {
+      id: '/braintree-benefits'
+      path: '/braintree-benefits'
+      fullPath: '/braintree-benefits'
+      preLoaderRoute: typeof BraintreeBenefitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -146,16 +285,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/braintree-video/$videoType': {
+      id: '/braintree-video/$videoType'
+      path: '/braintree-video/$videoType'
+      fullPath: '/braintree-video/$videoType'
+      preLoaderRoute: typeof BraintreeVideoVideoTypeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BraintreeBenefitsRoute: BraintreeBenefitsRoute,
+  BraintreeIntroRoute: BraintreeIntroRoute,
   ChallengesRoute: ChallengesRoute,
   ChannelsRoute: ChannelsRoute,
   ContactRoute: ContactRoute,
+  PpcpBenefitsRoute: PpcpBenefitsRoute,
+  PpcpIntroRoute: PpcpIntroRoute,
+  PpcpVideoRoute: PpcpVideoRoute,
   ProfileRoute: ProfileRoute,
   SolutionsRoute: SolutionsRoute,
+  SuccessRoute: SuccessRoute,
+  BraintreeVideoVideoTypeRoute: BraintreeVideoVideoTypeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

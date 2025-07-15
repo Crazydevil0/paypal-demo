@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,62 +18,39 @@ import {
 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useJourney } from '@/context/JourneyProvider'
+import { useDesignSystem } from '@/providers/ThemeProvider'
+import { GradientHighlight } from '@/components/ui/GradientHighlight'
+import { SOLUTIONS_CONTENT } from '@/lib/content'
+import { useHelper } from '@/context/HelperProvider'
+import { useBackground } from '@/hooks/useBackground'
 
-const PAYPAL_SOLUTIONS = {
-  'complete-payments': {
-    id: 'complete-payments',
-    title: 'PayPal Complete Payments',
-    subtitle: 'Solução ideal para pequenas e médias empresas',
-    description: 'Plataforma completa de pagamentos com checkout otimizado, proteção contra fraudes e ferramentas de crescimento.',
-    icon: CreditCard,
-    color: 'from-blue-500 to-blue-600',
-    bgGradient: 'from-blue-500/10 to-purple-500/10',
-    features: [
-      'Checkout em uma página',
-      'Pagamento com 1 clique',
-      'Proteção do vendedor',
-      'Analytics integrado',
-      'Suporte 24/7',
-      'APIs simples'
-    ],
-    benefits: [
-      { icon: TrendingUp, text: 'Até 30% mais conversões' },
-      { icon: Shield, text: 'Proteção total contra fraudes' },
-      { icon: Globe, text: 'Vendas para 200+ países' }
-    ]
-  },
-  'braintree': {
-    id: 'braintree',
-    title: 'Braintree by PayPal',
-    subtitle: 'Solução avançada para grandes empresas',
-    description: 'Plataforma de pagamentos de nível empresarial com controle total, customização avançada e infraestrutura global.',
-    icon: Building,
-    color: 'from-purple-500 to-purple-600',
-    bgGradient: 'from-purple-500/10 to-pink-500/10',
-    features: [
-      'APIs personalizáveis',
-      'Checkout customizado',
-      'Múltiplos processadores',
-      'Análise avançada',
-      'Suporte dedicado',
-      'Certificação PCI'
-    ],
-    benefits: [
-      { icon: Rocket, text: 'Escalabilidade ilimitada' },
-      { icon: Users, text: 'Suporte técnico dedicado' },
-      { icon: Shield, text: 'Segurança de nível bancário' }
-    ]
-  }
+// Icon mapping for solution header icons (Lucide icons)
+const solutionIconMap: Record<string, any> = {
+  CreditCard,
+  Building,
+  Globe,
+  Shield,
+  TrendingUp,
+  Users,
+  Rocket,
+  Sparkles
 }
 
 export default function SolutionsExperience() {
   const navigate = useNavigate()
   const { data, updateData } = useJourney()
+  const { settings } = useHelper()
+  const { getBackgroundStyle, isGradientBackground } = useBackground()
   const [selectedSolution, setSelectedSolution] = useState<'complete-payments' | 'braintree' | null>(null)
 
   // Determine recommended solution based on profile
   const recommendedSolution = data.profile === 'large-enterprise' ? 'braintree' : 'complete-payments'
-  const solutions = Object.values(PAYPAL_SOLUTIONS)
+  const solutions = Object.values(SOLUTIONS_CONTENT.solutions)
+
+  // Select recommended solution by default on mount
+  useEffect(() => {
+    setSelectedSolution(recommendedSolution)
+  }, [recommendedSolution])
 
   const handleSolutionSelect = (solutionId: 'complete-payments' | 'braintree') => {
     setSelectedSolution(solutionId)
@@ -82,38 +59,36 @@ export default function SolutionsExperience() {
 
   const handleContinue = () => {
     if (selectedSolution) {
-      navigate({ to: '/contact' })
+      const targetRoute = selectedSolution === 'complete-payments' ? '/ppcp-intro' : '/braintree-intro'
+      navigate({ to: targetRoute })
     }
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full filter blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse delay-1000"></div>
-      </div>
+  const backgroundStyle = getBackgroundStyle()
 
-      <div className="relative z-10 container mx-auto px-6 py-12">
+  return (
+    <div 
+      className={backgroundStyle.className}
+      style={backgroundStyle.style}
+    >
+      {/* Animated Background */}
+      {isGradientBackground() && (
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-400 rounded-full filter blur-3xl animate-pulse delay-1000"></div>
+        </div>
+      )}
+
+      <div className="relative z-10 w-full max-w-1440 mx-auto px-4 md:px-8 xl:px-16 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 mb-6">
-            <Sparkles className="w-6 h-6 text-purple-400 animate-pulse" />
-            <Badge className="text-lg px-4 py-2 bg-purple-500/20 text-purple-200 border-purple-500/30">
-              Passo 4 de 5
-            </Badge>
-            <Sparkles className="w-6 h-6 text-purple-400 animate-pulse" />
-          </div>
-          
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
             Sua solução{' '}
-            <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              personalizada
-            </span>
+            <GradientHighlight direction="reverse">personalizada</GradientHighlight>
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -121,126 +96,134 @@ export default function SolutionsExperience() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto mb-12">
+        <div className="grid lg:grid-cols-2 gap-8 mb-12">
           {solutions.map((solution, index) => {
             const isRecommended = solution.id === recommendedSolution
             const isSelected = selectedSolution === solution.id
-            const IconComponent = solution.icon
+                            const IconComponent = solutionIconMap[solution.icon as keyof typeof solutionIconMap]
 
             return (
-              <motion.div
-                key={solution.id}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="relative"
-              >
-                {/* Recommended Badge */}
-                {isRecommended && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.8 }}
-                    className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20"
-                  >
-                    <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
-                      <Sparkles className="w-4 h-4 mr-1" />
-                      Recomendado para você
-                    </Badge>
-                  </motion.div>
-                )}
-
-                <Card 
-                  className={`
-                    relative overflow-hidden cursor-pointer transition-all duration-500 border-2 h-full
-                    ${isSelected 
-                      ? 'border-purple-400 shadow-2xl shadow-purple-400/20 scale-105' 
-                      : isRecommended
-                        ? 'border-yellow-400/50 shadow-xl shadow-yellow-400/10'
-                        : 'border-white/10 hover:border-purple-400/50'
-                    }
-                    bg-white/5 backdrop-blur-xl hover:bg-white/10
-                  `}
-                  onClick={() => handleSolutionSelect(solution.id as 'complete-payments' | 'braintree')}
+              <div key={solution.id} className="relative flex flex-col items-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  className="w-full"
                 >
-                  {/* Background Gradient */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${solution.bgGradient} opacity-50`} />
-                  
-                  {/* Selection Indicator */}
-                  <AnimatePresence>
-                    {isSelected && (
+                  <Card 
+                    className={`
+                      relative overflow-visible cursor-pointer transition-all duration-500 border-2 h-full origin-center
+                      ${isSelected 
+                        ? 'border-yellow-400 shadow-2xl shadow-yellow-400/20 scale-105' 
+                        : isRecommended
+                          ? 'border-yellow-400/50 shadow-xl shadow-yellow-400/10'
+                          : 'border-white/10 hover:border-blue-400/50'
+                      }
+                      bg-white/5 backdrop-blur-xl hover:bg-white/10
+                    `}
+                    onClick={() => handleSolutionSelect(solution.id as 'complete-payments' | 'braintree')}
+                  >
+                    {/* Recommended Badge - positioned relative to the Card */}
+                    {isRecommended && (
                       <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        className="absolute top-4 right-4 z-20"
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.8 }}
+                        className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-30"
                       >
-                        <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center shadow-lg">
-                          <CheckCircle2 className="w-5 h-5 text-white" />
-                        </div>
+                        <Badge 
+                          className="text-slate-900 px-4 py-2 text-sm font-bold shadow-lg border-0 bg-yellow-400"
+                        >
+                          <Sparkles className="w-4 h-4 mr-1" />
+                          Recomendado para você
+                        </Badge>
                       </motion.div>
                     )}
-                  </AnimatePresence>
 
-                  <CardHeader className="relative z-10 pb-6">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className={`p-4 rounded-2xl bg-gradient-to-br ${solution.color} shadow-lg`}>
-                        <IconComponent className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <CardTitle className="text-2xl font-bold text-white mb-2">
-                          {solution.title}
-                        </CardTitle>
-                        <p className="text-purple-300 font-medium">
-                          {solution.subtitle}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <p className="text-gray-300 leading-relaxed text-lg">
-                      {solution.description}
-                    </p>
-                  </CardHeader>
-
-                  <CardContent className="relative z-10 space-y-6">
-                    {/* Key Benefits */}
-                    <div>
-                      <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                        <Zap className="w-5 h-5 text-purple-400" />
-                        Principais Benefícios
-                      </h4>
-                      <div className="grid gap-3">
-                        {solution.benefits.map((benefit) => {
-                          const BenefitIcon = benefit.icon
-                          return (
-                            <div key={benefit.text} className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
-                              <div className="p-2 rounded-lg bg-purple-500/20">
-                                <BenefitIcon className="w-4 h-4 text-purple-400" />
-                              </div>
-                              <span className="text-white font-medium">{benefit.text}</span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Features List */}
-                    <div>
-                      <h4 className="text-lg font-semibold text-white mb-4">
-                        Recursos Inclusos
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {solution.features.map((feature) => (
-                          <div key={feature} className="flex items-center gap-2 text-sm text-gray-300">
-                            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
-                            {feature}
+                    {/* Selection Indicator */}
+                    <AnimatePresence>
+                      {isSelected && (
+                        <motion.div
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          className="absolute top-4 right-4 z-20"
+                        >
+                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                            <CheckCircle2 className="w-5 h-5 text-white" />
                           </div>
-                        ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <CardHeader className={`relative z-10 ${settings.solutionsPage.elements.showDescription ? 'pb-6' : (settings.solutionsPage.elements.showMainBenefits || settings.solutionsPage.elements.showMoreBenefits) ? 'pb-2' : 'pb-0'}`}>
+                      <div className={`flex ${settings.solutionsPage.elements.showSubtitle ? 'items-start' : 'items-center'} gap-4 ${settings.solutionsPage.elements.showDescription ? 'mb-4' : 'mb-0'}`}>
+                        <div className={`p-4 rounded-2xl bg-gradient-to-br ${solution.color} shadow-lg`}>
+                          <IconComponent className="w-8 h-8 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <CardTitle className={`text-2xl font-bold text-white ${settings.solutionsPage.elements.showSubtitle ? 'mb-2' : 'mb-0'}`}>
+                            {solution.title}
+                          </CardTitle>
+                          {settings.solutionsPage.elements.showSubtitle && (
+                            <p className="text-blue-300 font-medium">
+                              {solution.subtitle}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                      
+                      {settings.solutionsPage.elements.showDescription && (
+                        <p className="text-gray-300 leading-relaxed text-lg">
+                          {solution.description}
+                        </p>
+                      )}
+                    </CardHeader>
+
+                    {(settings.solutionsPage.elements.showMainBenefits || settings.solutionsPage.elements.showMoreBenefits) && (
+                      <CardContent className="relative z-10 space-y-6">
+                        {/* Main Benefits */}
+                        {settings.solutionsPage.elements.showMainBenefits && (
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                              <Zap className="w-5 h-5 text-blue-300" />
+                              Principais Benefícios
+                            </h4>
+                            <div className="grid gap-4">
+                              {solution.mainBenefits.map((benefit) => (
+                                <div key={benefit.title} className="flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10">
+                                  <img src={benefit.icon} alt={benefit.title} className="w-12 h-12 object-contain flex-shrink-0" />
+                                  <div>
+                                    <h5 className="text-white font-semibold mb-1">{benefit.title}</h5>
+                                    <p className="text-gray-300 text-sm">{benefit.description}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* More Benefits - Two Column List */}
+                        {settings.solutionsPage.elements.showMoreBenefits && (
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-4">
+                              Recursos Inclusos
+                            </h4>
+                            <div className="grid grid-cols-2 gap-2">
+                              {solution.moreBenefits.map((benefit) => (
+                                <div key={benefit} className="flex items-center gap-2 text-sm text-gray-300">
+                                  <div className="w-1.5 h-1.5 bg-blue-300 rounded-full flex-shrink-0" />
+                                  <span>{benefit}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    )}
+                  </Card>
+                </motion.div>
+              </div>
             )
           })}
         </div>
@@ -254,35 +237,18 @@ export default function SolutionsExperience() {
         >
           <Button
             onClick={handleContinue}
+            variant="paypal-primary"
             disabled={!selectedSolution}
-            size="lg"
-            className={`
-              px-12 py-6 text-lg font-semibold rounded-2xl shadow-2xl transition-all duration-300
-              ${selectedSolution
-                ? 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-blue-500 hover:to-purple-500 text-white transform hover:scale-105 shadow-purple-500/30'
-                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              }
-            `}
           >
             {selectedSolution ? (
               <>
-                Continuar com {PAYPAL_SOLUTIONS[selectedSolution].title}
+                Continuar com {selectedSolution && SOLUTIONS_CONTENT.solutions[selectedSolution].title}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </>
             ) : (
               'Selecione uma solução para continuar'
             )}
           </Button>
-
-          {selectedSolution && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-sm text-gray-400 mt-4"
-            >
-              Próximo passo: informações de contato para demonstração personalizada
-            </motion.p>
-          )}
         </motion.div>
       </div>
     </div>

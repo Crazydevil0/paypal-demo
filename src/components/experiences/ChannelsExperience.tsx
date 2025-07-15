@@ -5,9 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { 
-  Globe, 
-  Instagram, 
-  ShoppingCart, 
   ArrowRight, 
   CheckCircle2,
   Sparkles,
@@ -16,46 +13,61 @@ import {
 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useJourney } from '@/context/JourneyProvider'
+import { useDesignSystem } from '@/providers/ThemeProvider'
+import { useHelper } from '@/context/HelperProvider'
+import { CHANNELS_CONTENT, UI_CONTENT } from '@/lib/content'
 import type { SalesChannel } from '@/types/journey'
 
-const CHANNEL_OPTIONS = [
-  {
-    id: 'website' as SalesChannel,
-    title: 'Website/E-commerce',
-    description: 'Venda online através do seu site ou loja virtual',
-    icon: Globe,
-    gradient: 'from-blue-500 via-purple-500 to-pink-500',
-    benefits: ['Alcance global', 'Vendas 24/7', 'Escalabilidade'],
-    features: ['Checkout integrado', 'Analytics avançado', 'SEO otimizado'],
-    bgPattern: '🌐'
-  },
-  {
-    id: 'social-media' as SalesChannel,
-    title: 'Redes Sociais',
-    description: 'Instagram, Facebook, TikTok e outras plataformas',
-    icon: Instagram,
-    gradient: 'from-pink-500 via-rose-500 to-orange-500',
-    benefits: ['Engajamento direto', 'Audiência jovem', 'Viral marketing'],
-    features: ['Stories Shopping', 'Live Commerce', 'Influencer tools'],
-    bgPattern: '📱'
-  },
-  {
-    id: 'ecommerce' as SalesChannel,
-    title: 'Marketplaces',
-    description: 'Amazon, Mercado Livre, Shopee e similares',
-    icon: ShoppingCart,
-    gradient: 'from-emerald-500 via-teal-500 to-cyan-500',
-    benefits: ['Tráfego garantido', 'Confiança do cliente', 'Logística facilitada'],
-    features: ['Fulfillment', 'Prime delivery', 'Review system'],
-    bgPattern: '🛒'
-  }
-]
+// Import custom icons
+import iconSite from '@/assets/icon-site.png'
+import iconRedes from '@/assets/icon-redes.png'
+import iconCartao from '@/assets/icon-cartao.png'
 
 export default function ChannelsExperience() {
   const navigate = useNavigate()
   const { data, updateData } = useJourney()
+  const { colors } = useDesignSystem()
+  const { settings } = useHelper()
   const [selectedChannels, setSelectedChannels] = useState<SalesChannel[]>(data.channels || [])
   const [hoveredChannel, setHoveredChannel] = useState<string | null>(null)
+
+  // Get current helper settings for channels page
+  const displayVariant = settings.channelsPage.displayVariant
+  const contentVariant = settings.channelsPage.contentVariant
+
+  const iconMap = {
+    'website': iconSite,
+    'social-media': iconRedes, 
+    'ecommerce': iconCartao
+  }
+
+  // Icon map for image-style variant (same as default variant)
+  const imageStyleIconMap = {
+    'website': iconSite,
+    'social-media': iconRedes,
+    'ecommerce': iconCartao
+  }
+
+  // Image-style content (based on the image you provided)
+  const imageStyleContent = {
+    options: [
+      {
+        id: 'website' as const,
+        text: "Tenho um site, mas vendo mais fora dele.",
+        bgColor: colors.paypal.blue
+      },
+      {
+        id: 'social-media' as const,
+        text: "Não tenho site, meu negócio vive nas redes sociais.",
+        bgColor: colors.paypal.lightBlue
+      },
+      {
+        id: 'ecommerce' as const,
+        text: "Tenho site com grande volume de vendas.",
+        bgColor: colors.paypal.qrBlue
+      }
+    ]
+  }
 
   const handleChannelToggle = (channelId: SalesChannel) => {
     setSelectedChannels(prev => 
@@ -70,162 +82,243 @@ export default function ChannelsExperience() {
     navigate({ to: '/challenges' })
   }
 
+  // Render Image Style Cards
+  const renderImageStyleCard = (channel: any, index: number) => {
+    const isSelected = selectedChannels.includes(channel.id)
+    const imageStyleData = imageStyleContent.options.find(opt => opt.id === channel.id)
+    const iconSrc = imageStyleIconMap[channel.id as keyof typeof imageStyleIconMap]
+
+    return (
+      <motion.div
+        key={channel.id}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: index * 0.2 }}
+        className="relative group h-full"
+      >
+        <Card 
+          className={`
+            relative overflow-hidden cursor-pointer transition-all duration-500 border-3 h-full min-h-[200px]
+            ${isSelected 
+              ? 'shadow-2xl scale-105' 
+              : 'border-white/20 hover:scale-102'
+            }
+            bg-white/10 backdrop-blur-xl hover:bg-white/15
+          `}
+          style={{
+            borderColor: isSelected ? colors.paypal.blue : 'rgba(255,255,255,0.2)',
+            backgroundColor: imageStyleData?.bgColor + '20',
+            boxShadow: isSelected ? `0 0 0 4px ${colors.paypal.blue}40` : undefined
+          }}
+          onClick={() => handleChannelToggle(channel.id)}
+        >
+          {/* Selection Indicator */}
+          <AnimatePresence>
+            {isSelected && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0, rotate: -180 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                exit={{ scale: 0, opacity: 0, rotate: 180 }}
+                className="absolute top-4 right-4 z-20"
+              >
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
+                     style={{ backgroundColor: colors.paypal.blue }}>
+                  <CheckCircle2 className="w-5 h-5 text-white" />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <CardContent className="relative z-10 p-8 h-full flex flex-col items-center justify-center text-center">
+            {/* Icon */}
+            <div className="p-6 rounded-full mb-6 shadow-xl"
+                 style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+              <img 
+                src={iconSrc} 
+                alt={channel.title}
+                className="w-16 h-16 object-contain"
+              />
+            </div>
+
+            {/* Main Text */}
+            <p className="text-xl font-bold text-white leading-relaxed">
+              {imageStyleData?.text || channel.description}
+            </p>
+          </CardContent>
+        </Card>
+      </motion.div>
+    )
+  }
+
+  // Render Default Cards
+  const renderDefaultCard = (channel: any, index: number) => {
+    const isSelected = selectedChannels.includes(channel.id)
+    const isHovered = hoveredChannel === channel.id
+    const iconSrc = iconMap[channel.id as keyof typeof iconMap]
+
+    return (
+      <motion.div
+        key={channel.id}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: index * 0.2 }}
+        onHoverStart={() => setHoveredChannel(channel.id)}
+        onHoverEnd={() => setHoveredChannel(null)}
+        className="relative group h-full"
+      >
+        <Card 
+          className={`
+            relative overflow-hidden cursor-pointer transition-all duration-500 border-2 h-full
+            ${isSelected 
+              ? 'shadow-2xl scale-105' 
+              : 'border-white/10 hover:scale-102'
+            }
+            bg-white/5 backdrop-blur-xl hover:bg-white/10
+          `}
+          style={{
+            borderColor: isSelected ? colors.paypal.blue : 'rgba(255,255,255,0.1)',
+            boxShadow: isSelected ? `0 25px 50px -12px ${colors.paypal.blue}20` : undefined
+          }}
+          onClick={() => handleChannelToggle(channel.id)}
+        >
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="text-9xl absolute top-4 right-4 select-none">
+              {channel.bgPattern}
+            </div>
+          </div>
+          
+          {/* Selection Indicator */}
+          <AnimatePresence>
+            {isSelected && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0, rotate: -180 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                exit={{ scale: 0, opacity: 0, rotate: 180 }}
+                className="absolute top-4 right-4 z-20"
+              >
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
+                     style={{ backgroundColor: colors.paypal.blue }}>
+                  <CheckCircle2 className="w-5 h-5 text-white" />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <CardHeader className="relative z-10 p-6">
+            {/* Channel Icon and Title */}
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-4 rounded-2xl shadow-lg"
+                   style={{ backgroundColor: `${colors.paypal.blue}20` }}>
+                <img 
+                  src={iconSrc} 
+                  alt={channel.title}
+                  className="w-12 h-12 object-contain"
+                />
+              </div>
+                             <div className="flex-1">
+                 <CardTitle className="text-xl font-bold text-white mb-2">
+                   {channel.title}
+                 </CardTitle>
+                 {(displayVariant === 'full' || displayVariant === 'title-description-only') && (
+                   <p className="text-gray-300 text-sm leading-relaxed">
+                     {channel.description}
+                   </p>
+                 )}
+               </div>
+            </div>
+
+            {/* Benefits - Only show in full mode */}
+            {displayVariant === 'full' && (
+              <div className="space-y-3 mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="w-4 h-4" style={{ color: colors.paypal.lightBlue }} />
+                  <span className="text-xs font-medium uppercase tracking-wide"
+                        style={{ color: colors.paypal.lightBlue }}>
+                    Benefícios
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {channel.benefits.map((benefit: string) => (
+                    <Badge 
+                      key={benefit}
+                      className="text-xs px-2 py-1 border"
+                      style={{
+                        backgroundColor: `${colors.paypal.lightBlue}10`,
+                        color: colors.paypal.lightBlue,
+                        borderColor: `${colors.paypal.lightBlue}30`
+                      }}
+                    >
+                      {benefit}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Features - Only show in full mode */}
+            {displayVariant === 'full' && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-4 h-4 text-gray-400" />
+                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+                    Recursos
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  {channel.features.map((feature: string) => (
+                    <div key={feature} className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full" 
+                           style={{ backgroundColor: colors.paypal.yellow }} />
+                      <span className="text-white text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardHeader>
+        </Card>
+      </motion.div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-paypal-primary rounded-full filter blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-paypal-light rounded-full filter blur-3xl animate-pulse delay-1000"></div>
+    <div 
+      className="min-h-screen relative overflow-hidden flex items-center justify-center"
+      style={{
+        background: `linear-gradient(135deg, ${colors.paypal.dark}, ${colors.paypal.navy}, ${colors.paypal.dark})`
+      }}
+    >
+      {/* Background Elements */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full filter blur-3xl animate-pulse"
+             style={{ backgroundColor: colors.paypal.lightBlue }} />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full filter blur-3xl animate-pulse delay-1000"
+             style={{ backgroundColor: colors.paypal.qrBlue }} />
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 py-12">
+      <div className="relative z-10 w-full max-w-1440 mx-auto px-4 md:px-8 xl:px-16 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 mb-6">
-            <Sparkles className="w-6 h-6 text-paypal-light animate-spin" />
-            <Badge variant="secondary" className="text-lg px-4 py-2 bg-white/10 text-white border-white/20">
-              Passo 2 de 5
-            </Badge>
-            <Sparkles className="w-6 h-6 text-paypal-light animate-spin" />
-          </div>
-          
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Onde você{' '}
-            <span className="bg-gradient-to-r from-paypal-light to-white bg-clip-text text-transparent">
-              vende hoje?
-            </span>
+            {CHANNELS_CONTENT.subtitle} {/* "Onde sua história acontece?" */}
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Selecione todos os canais onde sua empresa atua ou pretende atuar
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed"
+             style={{ color: colors.paypal.lightBlue }}>
+            {CHANNELS_CONTENT.title} {/* "Todo herói tem seu território..." */}
           </p>
-
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <TrendingUp className="w-5 h-5 text-paypal-light" />
-            <span className="text-paypal-light font-medium">
-              {selectedChannels.length} canal{selectedChannels.length !== 1 ? 'is' : ''} selecionado{selectedChannels.length !== 1 ? 's' : ''}
-            </span>
-          </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {CHANNEL_OPTIONS.map((channel, index) => {
-            const isSelected = selectedChannels.includes(channel.id)
-            const isHovered = hoveredChannel === channel.id
-            const IconComponent = channel.icon
-
-            return (
-              <motion.div
-                key={channel.id}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                onHoverStart={() => setHoveredChannel(channel.id)}
-                onHoverEnd={() => setHoveredChannel(null)}
-                className="relative group"
-              >
-                <Card 
-                  className={`
-                    relative overflow-hidden cursor-pointer transition-all duration-500 border-2
-                    ${isSelected 
-                      ? 'border-paypal-light shadow-2xl shadow-paypal-light/20 scale-105' 
-                      : 'border-white/10 hover:border-paypal-light/50 hover:scale-102'
-                    }
-                    bg-white/5 backdrop-blur-xl hover:bg-white/10
-                  `}
-                  onClick={() => handleChannelToggle(channel.id)}
-                >
-                  {/* Background Pattern */}
-                  <div className="absolute inset-0 opacity-5">
-                    <div className="text-9xl absolute top-4 right-4 select-none">
-                      {channel.bgPattern}
-                    </div>
-                  </div>
-
-                  {/* Gradient Overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${channel.gradient} opacity-10 transition-opacity duration-500 ${isHovered ? 'opacity-20' : ''}`} />
-                  
-                  {/* Selection Indicator */}
-                  <AnimatePresence>
-                    {isSelected && (
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        className="absolute top-4 right-4 z-20"
-                      >
-                        <div className="w-8 h-8 bg-paypal-light rounded-full flex items-center justify-center">
-                          <CheckCircle2 className="w-5 h-5 text-white" />
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <CardHeader className="relative z-10 pb-4">
-                    <div className="flex items-start justify-between">
-                      <div className={`p-4 rounded-2xl bg-gradient-to-br ${channel.gradient} shadow-lg`}>
-                        <IconComponent className="w-8 h-8 text-white" />
-                      </div>
-                      
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={() => handleChannelToggle(channel.id)}
-                        className="data-[state=checked]:bg-paypal-light data-[state=checked]:border-paypal-light"
-                      />
-                    </div>
-                    
-                    <CardTitle className="text-xl font-bold text-white mt-4">
-                      {channel.title}
-                    </CardTitle>
-                    
-                    <p className="text-gray-300 leading-relaxed">
-                      {channel.description}
-                    </p>
-                  </CardHeader>
-
-                  <CardContent className="relative z-10 space-y-6">
-                    {/* Benefits */}
-                    <div>
-                      <h4 className="text-sm font-semibold text-paypal-light mb-3 flex items-center gap-2">
-                        <Users className="w-4 h-4" />
-                        Benefícios
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {channel.benefits.map((benefit) => (
-                          <Badge 
-                            key={benefit} 
-                            variant="secondary" 
-                            className="text-xs bg-white/10 text-white border-white/20 hover:bg-white/20"
-                          >
-                            {benefit}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Features */}
-                    <div>
-                      <h4 className="text-sm font-semibold text-paypal-light mb-3 flex items-center gap-2">
-                        <Sparkles className="w-4 h-4" />
-                        Recursos
-                      </h4>
-                      <ul className="space-y-2">
-                        {channel.features.map((feature) => (
-                          <li key={feature} className="text-sm text-gray-300 flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 bg-paypal-light rounded-full" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )
+        <div className="grid md:grid-cols-3 gap-8">
+          {CHANNELS_CONTENT.options.map((channel, index) => {
+            return contentVariant === 'image-style' 
+              ? renderImageStyleCard(channel, index)
+              : renderDefaultCard(channel, index)
           })}
         </div>
 
@@ -233,40 +326,17 @@ export default function ChannelsExperience() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16"
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="text-center mt-12"
         >
           <Button
             onClick={handleContinue}
+            variant="paypal-primary"
             disabled={selectedChannels.length === 0}
-            size="lg"
-            className={`
-              px-12 py-6 text-lg font-semibold rounded-2xl shadow-2xl transition-all duration-300
-              ${selectedChannels.length > 0
-                ? 'bg-gradient-to-r from-paypal-primary to-paypal-light hover:from-paypal-light hover:to-paypal-primary text-white transform hover:scale-105 shadow-paypal-primary/30'
-                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              }
-            `}
           >
-            {selectedChannels.length > 0 ? (
-              <>
-                Continuar Jornada
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </>
-            ) : (
-              'Selecione pelo menos um canal'
-            )}
+            Avançar
+            <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
-
-          {selectedChannels.length > 0 && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-sm text-gray-400 mt-4"
-            >
-              Você pode alterar sua seleção a qualquer momento
-            </motion.p>
-          )}
         </motion.div>
       </div>
     </div>
