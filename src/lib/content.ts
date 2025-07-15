@@ -77,17 +77,11 @@ export const PROFILE_CONTENT = {
   options: [
     {
       id: 'small-medium' as const,
-      title: "Pequena/média empresa",
-      description: "Até 100 funcionários, faturamento até R$ 50M",
-      avatar: MEDIA.avatars.leo,
-      features: ['Vendas online', 'Redes sociais', 'Checkout simples']
+      title: "Pequena/média empresa"
     },
     {
       id: 'large-enterprise' as const, 
-      title: "Grande empresa",
-      description: "Mais de 100 funcionários, alto volume de transações",
-      avatar: MEDIA.avatars.ana,
-      features: ['Operações globais', 'Integração complexa', 'Múltiplos canais']
+      title: "Grande empresa"
     }
   ]
 } as const

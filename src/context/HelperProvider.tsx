@@ -4,27 +4,13 @@ import type { ReactNode } from 'react'
 
 // Helper settings types
 export type LogoVariant = 'logo' | 'monogram' | 'both'
-export type AvatarVariant = 'avatars' | 'icons'
 export type ChannelsDisplayVariant = 'full' | 'title-description-only'
-export type ChannelsContentVariant = 'default' | 'image-style'
 export type ChallengesDisplayVariant = 'full' | 'title-description-only'
-export type ChallengesContentVariant = 'default' | 'image-style'
-export type BackgroundVariant = 'gradient' | 'solid-navy'
 
-// Solutions page settings
-export interface SolutionsPageElements {
-  showMainBenefits: boolean
-  showMoreBenefits: boolean
-  showDescription: boolean
-  showSubtitle: boolean
-}
-
-// Profile card element toggles
+// Profile card element toggles - simplified to only show icons and titles
 export interface ProfileCardElements {
   showIcon: boolean
   showTitle: boolean
-  showDescription: boolean
-  showLabels: boolean
 }
 
 // Page-specific settings
@@ -33,38 +19,22 @@ interface HomePageSettings {
 }
 
 interface ProfilePageSettings {
-  avatarVariant: AvatarVariant
   cardElements: ProfileCardElements
 }
 
 interface ChannelsPageSettings {
   displayVariant: ChannelsDisplayVariant
-  contentVariant: ChannelsContentVariant
 }
 
 interface ChallengesPageSettings {
   displayVariant: ChallengesDisplayVariant
-  contentVariant: ChallengesContentVariant
-  showSolucaoPaypal: boolean
-  showImpactoAtual: boolean
-}
-
-interface SolutionsPageSettings {
-  elements: SolutionsPageElements
-}
-
-// Global settings (applies to all pages)
-interface GlobalSettings {
-  backgroundVariant: BackgroundVariant
 }
 
 interface HelperSettings {
-  global: GlobalSettings
   homePage: HomePageSettings
   profilePage: ProfilePageSettings
   channelsPage: ChannelsPageSettings
   challengesPage: ChallengesPageSettings
-  solutionsPage: SolutionsPageSettings
 }
 
 interface HelperContextType {
@@ -76,38 +46,20 @@ interface HelperContextType {
 }
 
 const defaultSettings: HelperSettings = {
-  global: {
-    backgroundVariant: 'gradient'
-  },
   homePage: {
     logoVariant: 'both'
   },
   profilePage: {
-    avatarVariant: 'avatars',
     cardElements: {
       showIcon: true,
-      showTitle: true,
-      showDescription: true,
-      showLabels: true
+      showTitle: true
     }
   },
   channelsPage: {
-    displayVariant: 'full',
-    contentVariant: 'default'
+    displayVariant: 'full'
   },
   challengesPage: {
-    displayVariant: 'full',
-    contentVariant: 'default',
-    showSolucaoPaypal: true,
-    showImpactoAtual: true
-  },
-  solutionsPage: {
-    elements: {
-      showMainBenefits: true,
-      showMoreBenefits: true,
-      showDescription: true,
-      showSubtitle: true
-    }
+    displayVariant: 'full'
   }
 }
 

@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { 
   Mail, 
   Phone, 
@@ -29,14 +28,13 @@ import confetti from 'canvas-confetti'
 export default function ContactExperience() {
   const navigate = useNavigate()
   const { data, updateData, saveJourney } = useJourney()
-  const { getBackgroundStyle, isGradientBackground } = useBackground()
+  const { getBackgroundStyle } = useBackground()
   
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     phone: '',
-    company: '',
-    message: ''
+    company: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -65,7 +63,7 @@ export default function ContactExperience() {
     }, 2000)
   }
 
-  const isFormValid = formData.fullName && formData.email && formData.company
+  const isFormValid = formData.fullName && formData.email && formData.phone && formData.company
 
   const backgroundStyle = getBackgroundStyle()
 
@@ -203,30 +201,23 @@ export default function ContactExperience() {
       className={backgroundStyle.className}
       style={backgroundStyle.style}
     >
-      {/* Animated Background */}
-      {isGradientBackground() && (
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-paypal-light rounded-full filter blur-3xl animate-pulse delay-1000"></div>
-        </div>
-      )}
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 md:px-8 xl:px-12 py-8">
+
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-6 xl:px-12 py-4 md:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          className="text-center mb-6 md:mb-8"
         >
 
           
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-            Entre em contato para uma demonstração
-            <GradientHighlight> personalizada</GradientHighlight>
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4 leading-tight">
+            Deixe seus dados para contato
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed">
-            Deixe seus dados para receber uma demonstração personalizada da solução PayPal ideal para você
+          <p className="text-base md:text-lg lg:text-xl text-gray-300 mb-4 md:mb-6 max-w-2xl mx-auto leading-relaxed">
+            Preencha seus dados para que possamos entrar em contato:
           </p>
         </motion.div>
 
@@ -236,17 +227,17 @@ export default function ContactExperience() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <Card className="p-6 md:p-8 bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
-              <CardHeader className="text-center pb-4">
-                <CardTitle className="text-xl md:text-2xl font-bold text-white flex items-center justify-center gap-3">
-                  <User className="w-6 h-6 md:w-8 md:h-8 text-paypal-light" />
+            <Card className="p-4 md:p-6 lg:p-8 bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+              <CardHeader className="text-center pb-3 md:pb-4">
+                <CardTitle className="text-lg md:text-xl lg:text-2xl font-bold text-white flex items-center justify-center gap-2 md:gap-3">
+                  <User className="w-5 h-5 md:w-6 md:h-6 lg:w-8 lg:h-8 text-paypal-light" />
                   Informações de Contato
                 </CardTitle>
               </CardHeader>
 
-              <CardContent className="space-y-4 md:space-y-6">
-                {/* Name and Email Row */}
-                <div className="grid gap-4 md:grid-cols-2">
+              <CardContent className="space-y-4">
+                {/* Name and Email Row - Single column on tablet for better keyboard experience */}
+                <div className="grid gap-4 lg:grid-cols-2">
                   <div className="space-y-2">
                     <label className="text-base font-medium text-gray-300 flex items-center gap-2">
                       <User className="w-5 h-5" />
@@ -256,7 +247,7 @@ export default function ContactExperience() {
                       value={formData.fullName}
                       onChange={(e) => handleInputChange('fullName', e.target.value)}
                       placeholder="Seu nome completo"
-                      className="h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
+                      className="h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
                     />
                   </div>
 
@@ -270,24 +261,24 @@ export default function ContactExperience() {
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       placeholder="seu@email.com"
-                      className="h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
+                      className="h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
                     />
                   </div>
                 </div>
 
-                {/* Phone and Company Row */}
-                <div className="grid gap-4 md:grid-cols-2">
+                {/* Phone and Company Row - Single column on tablet for better keyboard experience */}
+                <div className="grid gap-4 lg:grid-cols-2">
                   <div className="space-y-2">
                     <label className="text-base font-medium text-gray-300 flex items-center gap-2">
                       <Phone className="w-5 h-5" />
-                      Telefone
+                      Telefone *
                     </label>
                     <Input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       placeholder="(11) 99999-9999"
-                      className="h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
+                      className="h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
                     />
                   </div>
 
@@ -300,39 +291,19 @@ export default function ContactExperience() {
                       value={formData.company}
                       onChange={(e) => handleInputChange('company', e.target.value)}
                       placeholder="Nome da sua empresa"
-                      className="h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
+                      className="h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
                     />
                   </div>
                 </div>
 
-                {/* Message */}
-                <div className="space-y-2">
-                  <label className="text-base font-medium text-gray-300 flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5" />
-                    Mensagem (Opcional)
-                  </label>
-                  <Textarea
-                    value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
-                    placeholder="Conte mais sobre seus objetivos ou dúvidas específicas..."
-                    rows={3}
-                    className="text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl min-h-[80px]"
-                  />
-                </div>
-
                 {/* Submit Button */}
-                <div className="pt-4">
+                <div className="pt-2 md:pt-4">
                   <Button
                     onClick={handleSubmit}
                     disabled={!isFormValid || isSubmitting}
+                    variant="paypal-primary"
                     size="lg"
-                    className={`
-                      w-full h-16 text-xl font-semibold rounded-2xl shadow-2xl transition-all duration-300
-                      ${isFormValid && !isSubmitting
-                        ? 'bg-gradient-to-r from-paypal-primary to-paypal-light hover:from-paypal-light hover:to-paypal-primary text-white transform hover:scale-105 shadow-paypal-primary/30'
-                        : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                      }
-                    `}
+                    className="w-full h-12 md:h-16 text-lg md:text-xl font-semibold"
                   >
                     {isSubmitting ? (
                       <div className="flex items-center gap-3">
@@ -340,25 +311,11 @@ export default function ContactExperience() {
                         Enviando...
                       </div>
                     ) : isFormValid ? (
-                      <div className="flex items-center gap-3">
-                        <Zap className="w-6 h-6" />
-                        Finalizar Jornada
-                        <ArrowRight className="w-6 h-6" />
-                      </div>
+                      'Enviar dados'
                     ) : (
                       'Preencha os campos obrigatórios'
                     )}
                   </Button>
-
-                  {isFormValid && (
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-base text-gray-400 mt-4 text-center"
-                    >
-                      Nossa equipe entrará em contato em até 24 horas
-                    </motion.p>
-                  )}
                 </div>
               </CardContent>
             </Card>

@@ -12,9 +12,9 @@ import { GradientHighlight } from '@/components/ui/GradientHighlight'
 const WelcomeExperience: React.FC = () => {
   const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
-  const { colors, gradients } = useDesignSystem();
+  const { colors } = useDesignSystem();
   const { settings } = useHelper();
-  const { getBackgroundStyle, isGradientBackground } = useBackground();
+  const { getBackgroundStyle } = useBackground();
 
   useEffect(() => {
     // Smooth introduction delay
@@ -29,46 +29,10 @@ const WelcomeExperience: React.FC = () => {
   const backgroundStyle = getBackgroundStyle()
   
   return (
-    <div className="relative min-h-screen flex flex-col justify-between bg-cover bg-no-repeat" style={isGradientBackground() ? { background: gradients.heroBackground } : backgroundStyle.style}>
-      {/* Background Elements - Absolute */}
-      {isGradientBackground() && (
-        <div className="absolute inset-0 z-0">
-          {/* Ambient background effects */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-300/10 rounded-full blur-2xl animate-pulse delay-1000" />
-        {/* Subtle grid pattern */}
-        <div 
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `radial-gradient(circle at 25% 25%, ${colors.paypal.lightBlue} 2px, transparent 2px)`,
-            backgroundSize: '50px 50px'
-          }}
-        />
-        {/* Floating Particles */}
-        <div className="absolute inset-0 pointer-events-none">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-white/30 rounded-full"
-              style={{
-                left: `${20 + (i * 15)}%`,
-                top: `${30 + (i * 10)}%`,
-              }}
-              animate={{
-                y: [0, -20, 0],
-                opacity: [0.3, 0.7, 0.3],
-              }}
-              transition={{
-                duration: 3 + i * 0.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          ))}
-        </div>
-      </div>
-      )}
-
+    <div 
+      className={backgroundStyle.className}
+      style={backgroundStyle.style}
+    >
       {/* Main Flex Layout */}
       <div className="relative z-10 flex flex-col flex-1 justify-around min-h-screen">
         {/* Logo at top */}

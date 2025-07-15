@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { 
   ShoppingCart, 
   Clock, 
@@ -11,9 +10,7 @@ import {
   Users2, 
   CreditCard,
   ArrowRight, 
-  CheckCircle2,
-  Zap,
-  TrendingDown
+  CheckCircle2
 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useJourney } from '@/context/JourneyProvider'
@@ -21,20 +18,18 @@ import { useDesignSystem } from '@/providers/ThemeProvider'
 import { useHelper } from '@/context/HelperProvider'
 import { CHALLENGES_CONTENT } from '@/lib/content'
 import type { BusinessChallenge } from '@/types/journey'
+import { useBackground } from '@/hooks/useBackground'
 
 export default function ChallengesExperience() {
   const navigate = useNavigate()
   const { data, updateData } = useJourney()
-  const { colors, animations } = useDesignSystem()
+  const { colors } = useDesignSystem()
   const { settings } = useHelper()
+  const { getBackgroundStyle } = useBackground()
   const [selectedChallenges, setSelectedChallenges] = useState<BusinessChallenge[]>(data.challenges || [])
-  const [hoveredChallenge, setHoveredChallenge] = useState<string | null>(null)
 
-  // Get current helper settings for challenges page
+  // Get current helper settings for challenges page (unused but kept for consistency)
   const displayVariant = settings.challengesPage.displayVariant
-  const contentVariant = settings.challengesPage.contentVariant
-  const showSolucaoPaypal = settings.challengesPage.showSolucaoPaypal
-  const showImpactoAtual = settings.challengesPage.showImpactoAtual
 
   const iconMap = {
     'cart-abandonment': ShoppingCart,
@@ -70,7 +65,7 @@ export default function ChallengesExperience() {
   }
 
   // Render Image Style Cards
-  const renderImageStyleCard = (challenge: any, index: number) => {
+  const renderCard = (challenge: any, index: number) => {
     const isSelected = selectedChallenges.includes(challenge.id)
     const imageStyleData = imageStyleContent.options.find(opt => opt.id === challenge.id)
     const IconComponent = iconMap[challenge.id as keyof typeof iconMap]
@@ -119,8 +114,8 @@ export default function ChallengesExperience() {
           <CardContent className="relative z-10 p-8 h-full flex flex-col items-center justify-center text-center">
             {/* Icon */}
             <div className="p-6 rounded-full mb-6 shadow-xl"
-                 style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-              <IconComponent className="w-16 h-16 text-white" />
+                 style={{ backgroundColor: 'rgba(255,255,255,0.9)' }}>
+              <IconComponent className="w-16 h-16 text-gray-700" />
             </div>
 
             {/* Main Text */}
@@ -133,124 +128,12 @@ export default function ChallengesExperience() {
     )
   }
 
-  // Render Default Cards
-  const renderDefaultCard = (challenge: any, index: number) => {
-    const isSelected = selectedChallenges.includes(challenge.id)
-    const isHovered = hoveredChallenge === challenge.id
-    const IconComponent = iconMap[challenge.id as keyof typeof iconMap]
-
-    return (
-      <motion.div
-        key={challenge.id}
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: index * 0.1 }}
-        onHoverStart={() => setHoveredChallenge(challenge.id)}
-        onHoverEnd={() => setHoveredChallenge(null)}
-        className="relative group"
-      >
-        <Card 
-          className={`
-            relative overflow-hidden cursor-pointer transition-all duration-500 border-2 h-full
-            ${isSelected 
-              ? `shadow-2xl scale-105` 
-              : `border-white/10 hover:scale-102`
-            }
-            bg-white/5 backdrop-blur-xl hover:bg-white/10
-          `}
-          style={{
-            borderColor: isSelected ? colors.paypal.blue : 'rgba(255,255,255,0.1)',
-            boxShadow: isSelected ? `0 25px 50px -12px ${colors.paypal.blue}20` : undefined
-          }}
-          onClick={() => handleChallengeToggle(challenge.id)}
-        >
-          {/* Selection Indicator */}
-          <AnimatePresence>
-            {isSelected && (
-              <motion.div
-                initial={{ scale: 0, opacity: 0, rotate: -180 }}
-                animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                exit={{ scale: 0, opacity: 0, rotate: 180 }}
-                className="absolute top-4 right-4 z-20"
-              >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
-                     style={{ backgroundColor: colors.paypal.blue }}>
-                  <CheckCircle2 className="w-5 h-5 text-white" />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <CardHeader className="relative z-10 p-6">
-            {/* Challenge Icon and Title */}
-            <div className="flex items-start gap-4 mb-4">
-              <div className="p-4 rounded-2xl shadow-lg" 
-                   style={{ backgroundColor: `${colors.paypal.blue}20` }}>
-                <IconComponent className="w-8 h-8" style={{ color: colors.paypal.blue }} />
-              </div>
-              <div className="flex-1">
-                <CardTitle className="text-xl font-bold text-white mb-2">
-                  {challenge.title}
-                </CardTitle>
-                {(displayVariant === 'full' || displayVariant === 'title-description-only') && (
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    {challenge.description}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {displayVariant === 'full' && (
-              <div className="space-y-3">
-                {/* Statistics - Only show if enabled */}
-                {showImpactoAtual && (
-                  <div className={`p-3 rounded-lg border border-white/10`}
-                       style={{ backgroundColor: `${colors.paypal.yellow}10` }}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <TrendingDown className="w-4 h-4 text-gray-400" />
-                      <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">
-                        Impacto Atual
-                      </span>
-                    </div>
-                    <p className="text-white font-semibold">
-                      {challenge.stats}
-                    </p>
-                  </div>
-                )}
-
-                {/* Solution Preview - Only show if enabled */}
-                {showSolucaoPaypal && (
-                  <div className="p-3 rounded-lg border border-white/20"
-                       style={{ 
-                         background: `linear-gradient(to right, ${colors.paypal.blue}10, ${colors.paypal.lightBlue}10)`,
-                         borderColor: `${colors.paypal.lightBlue}20`
-                       }}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Zap className="w-4 h-4" style={{ color: colors.paypal.lightBlue }} />
-                      <span className="text-xs font-medium uppercase tracking-wide"
-                            style={{ color: colors.paypal.lightBlue }}>
-                        Solução PayPal
-                      </span>
-                    </div>
-                    <p className="text-white font-semibold text-sm">
-                      {challenge.solution}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-          </CardHeader>
-        </Card>
-      </motion.div>
-    )
-  }
+  const backgroundStyle = getBackgroundStyle()
 
   return (
     <div 
-      className="min-h-screen relative overflow-hidden flex items-center justify-center"
-      style={{
-        background: `linear-gradient(135deg, ${colors.paypal.dark}, ${colors.paypal.navy}, ${colors.paypal.dark})`
-      }}
+      className={backgroundStyle.className}
+      style={backgroundStyle.style}
     >
       {/* Background Elements */}
       <div className="absolute inset-0 opacity-10">
@@ -279,9 +162,7 @@ export default function ChallengesExperience() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {CHALLENGES_CONTENT.options.map((challenge, index) => {
-            return contentVariant === 'image-style' 
-              ? renderImageStyleCard(challenge, index)
-              : renderDefaultCard(challenge, index)
+            return renderCard(challenge, index)
           })}
         </div>
 

@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { 
   ArrowRight, 
-  Sparkles,
   Play,
   Users,
   BarChart3
@@ -19,7 +17,7 @@ import { useBackground } from '@/hooks/useBackground'
 export default function BraintreeIntroExperience() {
   const navigate = useNavigate()
   const { updateData } = useJourney()
-  const { getBackgroundStyle, isGradientBackground } = useBackground()
+  const { getBackgroundStyle } = useBackground()
   const [selectedVideoType, setSelectedVideoType] = useState<'customer' | 'merchant' | null>(null)
 
   const braintreeData = SOLUTIONS_CONTENT.solutions.braintree
@@ -45,14 +43,6 @@ export default function BraintreeIntroExperience() {
       className={backgroundStyle.className}
       style={backgroundStyle.style}
     >
-      {/* Animated Background */}
-      {isGradientBackground() && (
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 rounded-full filter blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-400 rounded-full filter blur-3xl animate-pulse delay-1000"></div>
-        </div>
-      )}
-
       <div className="relative z-10 w-full max-w-1440 mx-auto px-4 md:px-8 xl:px-16 py-12">
         {/* Header */}
         <motion.div
@@ -61,15 +51,9 @@ export default function BraintreeIntroExperience() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-
-          
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Controle <GradientHighlight>empresarial</GradientHighlight> total
+            Com o <GradientHighlight>Paypal Braintree</GradientHighlight>:
           </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            A plataforma de pagamentos de nível empresarial para grandes negócios que precisam de controle total
-          </p>
         </motion.div>
 
         {/* Features Grid */}
@@ -83,18 +67,13 @@ export default function BraintreeIntroExperience() {
             >
               <Card className="py-3 relative overflow-visible cursor-pointer transition-all duration-500 border-2 h-full border-white/10 hover:border-blue-400/50 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:scale-105">
                 <CardContent className="relative z-10 p-4">
-                  {/* Icon and title */}
-                  <div className="flex items-center gap-4 mb-3">
+                  {/* Icon and title only */}
+                  <div className="flex items-center gap-4">
                     <img src={feature.icon} alt={feature.title} className="w-12 h-12 object-contain flex-shrink-0" />
                     <h3 className="text-lg font-bold text-white">
                       {feature.title}
                     </h3>
                   </div>
-
-                  {/* Description */}
-                  <p className="text-gray-300 text-base leading-relaxed">
-                    {feature.description}
-                  </p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -108,14 +87,10 @@ export default function BraintreeIntroExperience() {
           transition={{ delay: 0.8, duration: 0.6 }}
           className="mb-12"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-8">
-            Tecnologia <GradientHighlight direction="reverse">avançada</GradientHighlight> para empresas
-          </h2>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="relative group">
+          <div className="grid md:grid-cols-2 gap-8 md:items-start">
+            <div className="relative group h-full">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-blue-400/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-              <div className="relative p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
+              <div className="relative p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 h-full flex items-center">
                 <img 
                   src="/src/assets/braintree-checkout-1.png" 
                   alt="Braintree Checkout Interface" 
@@ -124,9 +99,9 @@ export default function BraintreeIntroExperience() {
               </div>
             </div>
             
-            <div className="relative group">
+            <div className="relative group h-full">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-              <div className="relative p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
+              <div className="relative p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 h-full flex items-center">
                 <img 
                   src="/src/assets/braintree-checkout-2.png" 
                   alt="Braintree Advanced Features" 
@@ -227,6 +202,18 @@ export default function BraintreeIntroExperience() {
               Pular vídeos e continuar
             </Button>
           </motion.div>
+        </motion.div>
+
+        {/* Footer with asterisk note */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.0, duration: 0.6 }}
+          className="text-center mt-16"
+        >
+          <p className="text-gray-400 text-sm">
+            * sob aprovação
+          </p>
         </motion.div>
       </div>
     </div>

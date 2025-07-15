@@ -1,15 +1,11 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { 
   ArrowRight, 
-  Sparkles,
-  CreditCard,
   Play
 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
-import { GradientHighlight } from '@/components/ui/GradientHighlight'
 import { useBackground } from '@/hooks/useBackground'
 import { SOLUTIONS_CONTENT } from '@/lib/content'
 
@@ -18,7 +14,7 @@ const ppcpFeatures = SOLUTIONS_CONTENT.solutions['complete-payments'].mainBenefi
 
 export default function PPCPIntroExperience() {
   const navigate = useNavigate()
-  const { getBackgroundStyle, isGradientBackground } = useBackground()
+  const { getBackgroundStyle } = useBackground()
 
   const handleVideoSelection = () => {
     navigate({ to: '/ppcp-video' })
@@ -32,14 +28,6 @@ export default function PPCPIntroExperience() {
 
   return (
     <div className={backgroundStyle.className} style={backgroundStyle.style}>
-      {/* Animated Background */}
-      {isGradientBackground() && (
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-400 rounded-full filter blur-3xl animate-pulse delay-1000"></div>
-        </div>
-      )}
-
       <div className="relative z-10 w-full max-w-1440 mx-auto px-4 md:px-8 xl:px-16 py-12">
         {/* Header */}
         <motion.div
@@ -48,15 +36,9 @@ export default function PPCPIntroExperience() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-
-          
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
             Com o Paypal Complete Payments:
           </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            A solução completa para pequenas e médias empresas expandirem com segurança e eficiência
-          </p>
         </motion.div>
 
         {/* Features Grid */}
@@ -90,8 +72,6 @@ export default function PPCPIntroExperience() {
           transition={{ delay: 0.8, duration: 0.6 }}
           className="mb-12"
         >
-          {/* Removed interface section */}
-          
           <div className="grid md:grid-cols-2 gap-8">
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-400/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
