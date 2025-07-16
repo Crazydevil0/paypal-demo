@@ -6,6 +6,7 @@ import { CheckCircle2, ArrowRight, Trophy, Sparkles } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useJourney } from '@/context/JourneyProvider'
 import confetti from 'canvas-confetti'
+import { MEDIA } from '@/lib/content'
 
 export default function SuccessExperience() {
   const navigate = useNavigate()
@@ -134,9 +135,9 @@ export default function SuccessExperience() {
           >
             <div className="relative rounded-2xl overflow-hidden shadow-xl">
               <img 
-                src="/src/assets/pay.jpg" 
-                alt="Celebration" 
-                className="w-full h-auto object-cover"
+                src={MEDIA.products.pay}
+                alt="PayPal Payment Success" 
+                className="w-full h-auto rounded-xl opacity-90"
               />
             </div>
           </motion.div>
