@@ -46,14 +46,21 @@ export default function ContactExperience() {
   const handleSubmit = async () => {
     setIsSubmitting(true)
     
-    // Update journey data
-    updateData({ 
+    console.log('📝 [CONTACT-SUBMIT] Submitting contact form:', formData);
+    
+    // Prepare journey data with contact and completion
+    const journeyUpdates = { 
       contact: formData,
       completedAt: new Date()
-    })
+    }
     
-    // Save journey
-    await saveJourney()
+    // Update state
+    updateData(journeyUpdates)
+    
+    // Save journey with explicit contact data to avoid React state timing issues
+    await saveJourney(journeyUpdates)
+    
+    console.log('✅ [CONTACT-SUBMIT] Journey saved with contact data');
     
     // Simulate API call and navigate to success
     setTimeout(() => {

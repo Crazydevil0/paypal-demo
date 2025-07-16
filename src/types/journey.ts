@@ -33,5 +33,5 @@ export interface JourneyContextType {
   data: JourneyData
   updateData: (updates: Partial<JourneyData>) => void
   resetJourney: () => void
-  saveJourney: () => Promise<void>
+  saveJourney: (overrideData?: Partial<JourneyData>) => Promise<void>
 } 

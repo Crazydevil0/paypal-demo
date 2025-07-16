@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/providers/ThemeProvider'
 function RootLayout() {
   return (
     <div className="min-h-screen relative">
+      {/* Navigation removed as requested */}
       <Outlet />
     </div>
   )

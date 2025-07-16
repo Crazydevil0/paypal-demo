@@ -22,28 +22,45 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
     setData({ ...initialJourneyData, startedAt: new Date() })
   }, [])
 
-  const saveJourney = useCallback(async () => {
+  const saveJourney = useCallback(async (overrideData?: Partial<JourneyData>) => {
+    // Use current state plus any override data passed in
+    const currentData = overrideData ? { ...data, ...overrideData } : data;
+    
+    console.log('💾 [JOURNEY-SAVE] Starting journey save process...', {
+      profile: currentData.profile,
+      channels: currentData.channels?.length || 0,
+      challenges: currentData.challenges?.length || 0,
+      hasContact: !!(currentData.contact?.fullName || currentData.contact?.email || currentData.contact?.phone),
+      contactData: currentData.contact
+    });
+    
     try {
+      // Import offline storage dynamically to avoid SSR issues
+      const { offlineStorage } = await import('@/lib/offline-storage')
+      
       // Mark as completed
       const completedJourney = { 
-        ...data, 
-        completedAt: new Date() 
+        ...currentData, 
+        completedAt: currentData.completedAt || new Date() 
       }
       
-      // Save to localStorage for offline-first approach
-      const existingJourneys = JSON.parse(
-        localStorage.getItem('paypal-journeys') || '[]'
-      )
+      console.log('💾 [JOURNEY-SAVE] Saving to offline storage with contact:', completedJourney.contact);
       
-      const updatedJourneys = [...existingJourneys, completedJourney]
-      localStorage.setItem('paypal-journeys', JSON.stringify(updatedJourneys))
+      // Save to enhanced offline storage
+      const offlineJourney = await offlineStorage.saveJourney(completedJourney)
       
       // Update state
       setData(completedJourney)
       
-      console.log('Journey saved successfully:', completedJourney)
+      console.log('✅ [JOURNEY-SAVE] Journey saved successfully:', {
+        localId: offlineJourney.localId,
+        profile: offlineJourney.profile,
+        syncStatus: offlineJourney.syncStatus,
+        hasContact: !!offlineJourney.contact,
+        contactKeys: offlineJourney.contact ? Object.keys(offlineJourney.contact) : []
+      });
     } catch (error) {
-      console.error('Failed to save journey:', error)
+      console.error('❌ [JOURNEY-SAVE] Failed to save journey:', error)
       throw error
     }
   }, [data])

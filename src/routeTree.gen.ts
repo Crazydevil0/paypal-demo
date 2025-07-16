@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuccessRouteImport } from './routes/success'
+import { Route as StatusRouteImport } from './routes/status'
 import { Route as SolutionsRouteImport } from './routes/solutions'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PpcpVideoRouteImport } from './routes/ppcp-video'
@@ -20,12 +21,18 @@ import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as ChallengesRouteImport } from './routes/challenges'
 import { Route as BraintreeIntroRouteImport } from './routes/braintree-intro'
 import { Route as BraintreeBenefitsRouteImport } from './routes/braintree-benefits'
+import { Route as AdminJourneysRouteImport } from './routes/admin-journeys'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BraintreeVideoVideoTypeRouteImport } from './routes/braintree-video.$videoType'
 
 const SuccessRoute = SuccessRouteImport.update({
   id: '/success',
   path: '/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SolutionsRoute = SolutionsRouteImport.update({
@@ -78,6 +85,11 @@ const BraintreeBenefitsRoute = BraintreeBenefitsRouteImport.update({
   path: '/braintree-benefits',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminJourneysRoute = AdminJourneysRouteImport.update({
+  id: '/admin-journeys',
+  path: '/admin-journeys',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -91,6 +103,7 @@ const BraintreeVideoVideoTypeRoute = BraintreeVideoVideoTypeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin-journeys': typeof AdminJourneysRoute
   '/braintree-benefits': typeof BraintreeBenefitsRoute
   '/braintree-intro': typeof BraintreeIntroRoute
   '/challenges': typeof ChallengesRoute
@@ -101,11 +114,13 @@ export interface FileRoutesByFullPath {
   '/ppcp-video': typeof PpcpVideoRoute
   '/profile': typeof ProfileRoute
   '/solutions': typeof SolutionsRoute
+  '/status': typeof StatusRoute
   '/success': typeof SuccessRoute
   '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin-journeys': typeof AdminJourneysRoute
   '/braintree-benefits': typeof BraintreeBenefitsRoute
   '/braintree-intro': typeof BraintreeIntroRoute
   '/challenges': typeof ChallengesRoute
@@ -116,12 +131,14 @@ export interface FileRoutesByTo {
   '/ppcp-video': typeof PpcpVideoRoute
   '/profile': typeof ProfileRoute
   '/solutions': typeof SolutionsRoute
+  '/status': typeof StatusRoute
   '/success': typeof SuccessRoute
   '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin-journeys': typeof AdminJourneysRoute
   '/braintree-benefits': typeof BraintreeBenefitsRoute
   '/braintree-intro': typeof BraintreeIntroRoute
   '/challenges': typeof ChallengesRoute
@@ -132,6 +149,7 @@ export interface FileRoutesById {
   '/ppcp-video': typeof PpcpVideoRoute
   '/profile': typeof ProfileRoute
   '/solutions': typeof SolutionsRoute
+  '/status': typeof StatusRoute
   '/success': typeof SuccessRoute
   '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
@@ -139,6 +157,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin-journeys'
     | '/braintree-benefits'
     | '/braintree-intro'
     | '/challenges'
@@ -149,11 +168,13 @@ export interface FileRouteTypes {
     | '/ppcp-video'
     | '/profile'
     | '/solutions'
+    | '/status'
     | '/success'
     | '/braintree-video/$videoType'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin-journeys'
     | '/braintree-benefits'
     | '/braintree-intro'
     | '/challenges'
@@ -164,11 +185,13 @@ export interface FileRouteTypes {
     | '/ppcp-video'
     | '/profile'
     | '/solutions'
+    | '/status'
     | '/success'
     | '/braintree-video/$videoType'
   id:
     | '__root__'
     | '/'
+    | '/admin-journeys'
     | '/braintree-benefits'
     | '/braintree-intro'
     | '/challenges'
@@ -179,12 +202,14 @@ export interface FileRouteTypes {
     | '/ppcp-video'
     | '/profile'
     | '/solutions'
+    | '/status'
     | '/success'
     | '/braintree-video/$videoType'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminJourneysRoute: typeof AdminJourneysRoute
   BraintreeBenefitsRoute: typeof BraintreeBenefitsRoute
   BraintreeIntroRoute: typeof BraintreeIntroRoute
   ChallengesRoute: typeof ChallengesRoute
@@ -195,6 +220,7 @@ export interface RootRouteChildren {
   PpcpVideoRoute: typeof PpcpVideoRoute
   ProfileRoute: typeof ProfileRoute
   SolutionsRoute: typeof SolutionsRoute
+  StatusRoute: typeof StatusRoute
   SuccessRoute: typeof SuccessRoute
   BraintreeVideoVideoTypeRoute: typeof BraintreeVideoVideoTypeRoute
 }
@@ -206,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/success'
       fullPath: '/success'
       preLoaderRoute: typeof SuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/solutions': {
@@ -278,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BraintreeBenefitsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin-journeys': {
+      id: '/admin-journeys'
+      path: '/admin-journeys'
+      fullPath: '/admin-journeys'
+      preLoaderRoute: typeof AdminJourneysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -297,6 +337,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminJourneysRoute: AdminJourneysRoute,
   BraintreeBenefitsRoute: BraintreeBenefitsRoute,
   BraintreeIntroRoute: BraintreeIntroRoute,
   ChallengesRoute: ChallengesRoute,
@@ -307,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   PpcpVideoRoute: PpcpVideoRoute,
   ProfileRoute: ProfileRoute,
   SolutionsRoute: SolutionsRoute,
+  StatusRoute: StatusRoute,
   SuccessRoute: SuccessRoute,
   BraintreeVideoVideoTypeRoute: BraintreeVideoVideoTypeRoute,
 }
