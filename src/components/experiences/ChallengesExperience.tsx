@@ -15,7 +15,6 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { useJourney } from '@/context/JourneyProvider'
 import { useDesignSystem } from '@/providers/ThemeProvider'
-import { useHelper } from '@/context/HelperProvider'
 import { CHALLENGES_CONTENT } from '@/lib/content'
 import type { BusinessChallenge } from '@/types/journey'
 import { useBackground } from '@/hooks/useBackground'
@@ -24,12 +23,10 @@ export default function ChallengesExperience() {
   const navigate = useNavigate()
   const { data, updateData } = useJourney()
   const { colors } = useDesignSystem()
-  const { settings } = useHelper()
   const { getBackgroundStyle } = useBackground()
   const [selectedChallenges, setSelectedChallenges] = useState<BusinessChallenge[]>(data.challenges || [])
 
-  // Get current helper settings for challenges page (unused but kept for consistency)
-  const displayVariant = settings.challengesPage.displayVariant
+  // Removed unused display variant settings
 
   const iconMap = {
     'cart-abandonment': ShoppingCart,

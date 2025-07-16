@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/card'
 import { useNavigate } from '@tanstack/react-router'
 import { useJourney } from '@/context/JourneyProvider'
-import { useHelper } from '@/context/HelperProvider'
 import type { BusinessProfile } from '@/types/journey'
 import { useDesignSystem } from '@/providers/ThemeProvider'
 import { PROFILE_CONTENT } from '@/lib/content'
@@ -13,7 +12,6 @@ import { useBackground } from '@/hooks/useBackground'
 const ProfileExperience: React.FC = () => {
   const navigate = useNavigate()
   const { updateData } = useJourney()
-  const { settings } = useHelper()
   const { colors } = useDesignSystem()
   const { getBackgroundStyle } = useBackground()
 
@@ -57,8 +55,6 @@ const ProfileExperience: React.FC = () => {
         {/* Profile Cards */}
         <div className="grid gap-8 w-full max-w-3xl mx-auto">
           {PROFILE_CONTENT.options.map((option, index) => {
-            const profileSettings = settings.profilePage
-            
             // Get icon based on profile type
             const iconSrc = option.id === 'small-medium' 
               ? getBusinessIcon('smallMedium')
@@ -85,27 +81,23 @@ const ProfileExperience: React.FC = () => {
                   aria-label={`Selecionar perfil: ${option.title}`}
                 >
                   <div className="flex items-center gap-6 justify-center">
-                    {/* Icon Section */}
-                    {profileSettings.cardElements.showIcon && (
-                      <div className="flex justify-center items-center">
-                        <div className="bg-white rounded-xl p-6 shadow-lg">
-                          <img
-                            src={iconSrc}
-                            alt={option.title}
-                            className="w-24 h-24 object-contain"
-                          />
-                        </div>
+                    {/* Icon Section - Always shown (hardcoded default) */}
+                    <div className="flex justify-center items-center">
+                      <div className="bg-white rounded-xl p-6 shadow-lg">
+                        <img
+                          src={iconSrc}
+                          alt={option.title}
+                          className="w-24 h-24 object-contain"
+                        />
                       </div>
-                    )}
+                    </div>
 
-                    {/* Title Section */}
-                    {profileSettings.cardElements.showTitle && (
-                      <div className="flex-1 text-center">
-                        <h3 className="text-3xl font-bold text-white">
-                          {option.title}
-                        </h3>
-                      </div>
-                    )}
+                    {/* Title Section - Always shown (hardcoded default) */}
+                    <div className="flex-1 text-center">
+                      <h3 className="text-3xl font-bold text-white">
+                        {option.title}
+                      </h3>
+                    </div>
                   </div>
                 </Card>
               </motion.div>

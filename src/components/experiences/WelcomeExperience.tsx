@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowRight } from 'lucide-react';
 import { useDesignSystem } from '@/providers/ThemeProvider';
-import { useHelper } from '@/context/HelperProvider';
 import { useBackground } from '@/hooks/useBackground';
 import { WELCOME_CONTENT, MEDIA } from '@/lib/content';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,6 @@ const WelcomeExperience: React.FC = () => {
   const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
   const { colors } = useDesignSystem();
-  const { settings } = useHelper();
   const { getBackgroundStyle } = useBackground();
 
   useEffect(() => {
@@ -45,40 +43,22 @@ const WelcomeExperience: React.FC = () => {
                 transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 className="relative flex flex-col items-center space-y-4"
               >
-                {/* Conditional Logo Rendering based on Helper Settings */}
-                {settings.homePage.logoVariant === 'monogram' && (
+                {/* Both Monogram + Logo (hardcoded default) */}
+                <>
+                  {/* PayPal Monogram */}
                   <img 
                     src={MEDIA.logo} 
                     alt="PayPal Monogram" 
-                    className="h-24 md:h-28 lg:h-32 w-auto"
+                    className="h-20 md:h-24 lg:h-28 w-auto"
                   />
-                )}
-                
-                {settings.homePage.logoVariant === 'logo' && (
+                  
+                  {/* PayPal Logo */}
                   <img 
                     src={MEDIA.logoSvg} 
                     alt="PayPal Logo" 
-                    className="h-12 md:h-16 lg:h-20 w-auto"
+                    className="h-12 md:h-16 lg:h-20 w-auto opacity-90"
                   />
-                )}
-                
-                {settings.homePage.logoVariant === 'both' && (
-                  <>
-                    {/* PayPal Monogram */}
-                    <img 
-                      src={MEDIA.logo} 
-                      alt="PayPal Monogram" 
-                      className="h-20 md:h-24 lg:h-28 w-auto"
-                    />
-                    
-                    {/* PayPal Logo */}
-                    <img 
-                      src={MEDIA.logoSvg} 
-                      alt="PayPal Logo" 
-                      className="h-12 md:h-16 lg:h-20 w-auto opacity-90"
-                    />
-                  </>
-                )}
+                </>
               </motion.div>
             )}
           </AnimatePresence>
@@ -123,28 +103,29 @@ const WelcomeExperience: React.FC = () => {
         </div>
 
         {/* CTA Button - Separate flexbox item */}
-        <div className="flex justify-center px-10 md:px-16 xl:px-24">
+        <div className="pb-16 flex justify-center">
           <AnimatePresence>
             {isLoaded && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 1, ease: [0.22, 1, 0.36, 1] }}
               >
                 <Button
                   onClick={handleGetStarted}
-                  variant="ghost"
-                  className="group h-auto px-12 py-8 text-xl font-semibold text-white hover:text-white border-2 border-white/30 bg-transparent hover:bg-white/10 hover:border-white/50 backdrop-blur-sm shadow-2xl hover:shadow-white/10 transition-all duration-300 hover:scale-105 rounded-full"
+                  size="lg"
+                  variant="paypal-primary"
+                  className="group relative overflow-hidden"
                 >
-                  {WELCOME_CONTENT.cta.text}
-                  <ArrowRight className="ml-4 w-7 h-7 transition-transform group-hover:translate-x-1" />
+                  <span className="relative z-10 flex items-center">
+                    {WELCOME_CONTENT.cta.text}
+                    <ArrowRight className="ml-3 w-6 h-6 transition-transform group-hover:translate-x-1" />
+                  </span>
                 </Button>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-
-
       </div>
     </div>
   );

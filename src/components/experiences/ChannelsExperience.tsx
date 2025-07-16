@@ -9,7 +9,6 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { useJourney } from '@/context/JourneyProvider'
 import { useDesignSystem } from '@/providers/ThemeProvider'
-import { useHelper } from '@/context/HelperProvider'
 import { CHANNELS_CONTENT } from '@/lib/content'
 import type { SalesChannel } from '@/types/journey'
 import { useBackground } from '@/hooks/useBackground'
@@ -23,12 +22,10 @@ export default function ChannelsExperience() {
   const navigate = useNavigate()
   const { data, updateData } = useJourney()
   const { colors } = useDesignSystem()
-  const { settings } = useHelper()
   const { getBackgroundStyle } = useBackground()
   const [selectedChannels, setSelectedChannels] = useState<SalesChannel[]>(data.channels || [])
 
-  // Get current helper settings for channels page (unused but kept for consistency)
-  const { displayVariant } = settings.channelsPage
+  // Removed unused display variant settings
 
   const backgroundStyle = getBackgroundStyle()
 
