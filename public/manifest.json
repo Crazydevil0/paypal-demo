@@ -1,0 +1,25 @@
+{
+  "name": "PayPal Demo - Sales Experience",
+  "short_name": "PayPal Demo",
+  "description": "Interactive PayPal sales demonstration for tablets",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "theme_color": "#0070ba",
+  "background_color": "#ffffff",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png", 
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "finance"],
+  "lang": "pt-BR"
+} 

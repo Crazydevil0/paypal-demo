@@ -4,6 +4,7 @@ import { JourneyProvider } from '@/context/JourneyProvider'
 import { routeTree } from './routeTree.gen'
 import { useEffect } from 'react'
 import { initializeSyncService } from '@/lib/sync-service'
+import { serviceWorkerManager } from '@/lib/service-worker'
 
 // Create Convex client
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL!)
@@ -22,6 +23,22 @@ function AppContent() {
   useEffect(() => {
     // Initialize sync service when app loads
     initializeSyncService(convex as any)
+    
+    // Service worker is initialized automatically via its constructor
+    // but we can add network status monitoring here if needed
+    const handleOnline = () => {
+      console.log('[App] Network: Online')
+    }
+    
+    const handleOffline = () => {
+      console.log('[App] Network: Offline')
+    }
+    
+    serviceWorkerManager.addNetworkListeners(handleOnline, handleOffline)
+    
+    return () => {
+      serviceWorkerManager.removeNetworkListeners(handleOnline, handleOffline)
+    }
   }, [])
 
   return (

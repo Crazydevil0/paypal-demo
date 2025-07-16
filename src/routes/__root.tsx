@@ -1,21 +1,16 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { ThemeProvider } from '@/providers/ThemeProvider'
-
-function RootLayout() {
-  return (
-    <div className="min-h-screen relative">
-      {/* Navigation removed as requested */}
-      <Outlet />
-    </div>
-  )
-}
+import { OfflineIndicator } from '@/components/ui/OfflineIndicator'
 
 export const Route = createRootRoute({
   component: () => (
     <ThemeProvider>
-      <RootLayout />
-      <TanStackRouterDevtools />
+      <div className="flex flex-col min-h-screen">
+        <Outlet />
+        <OfflineIndicator />
+        <TanStackRouterDevtools />
+      </div>
     </ThemeProvider>
   ),
 }) 
