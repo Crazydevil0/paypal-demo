@@ -17,13 +17,142 @@ import {
   Zap,
   QrCode,
   Calendar,
-  MessageSquare
+  MessageSquare,
+  AlertCircle,
+  Check
 } from 'lucide-react'
 import { useJourney } from '@/context/JourneyProvider'
 import { useNavigate } from '@tanstack/react-router'
 import { GradientHighlight } from '@/components/ui/GradientHighlight'
 import { useBackground } from '@/hooks/useBackground'
 import confetti from 'canvas-confetti'
+import React from 'react'
+
+// Validation utilities
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
+
+const validatePhone = (phone: string): boolean => {
+  // Remove all non-digits
+  const digits = phone.replace(/\D/g, '')
+  // Brazilian phone: 10 or 11 digits (with area code)
+  return digits.length >= 10 && digits.length <= 11
+}
+
+const validateName = (name: string): boolean => {
+  return name.trim().length >= 2
+}
+
+const validateCompany = (company: string): boolean => {
+  return company.trim().length >= 2
+}
+
+// Phone mask utility for Brazilian format
+const formatPhoneNumber = (value: string): string => {
+  // Remove all non-digits
+  const digits = value.replace(/\D/g, '')
+  
+  // Limit to 11 digits
+  const limitedDigits = digits.slice(0, 11)
+  
+  // Apply Brazilian phone format
+  if (limitedDigits.length <= 2) {
+    return limitedDigits
+  } else if (limitedDigits.length <= 6) {
+    return `(${limitedDigits.slice(0, 2)}) ${limitedDigits.slice(2)}`
+  } else if (limitedDigits.length <= 10) {
+    return `(${limitedDigits.slice(0, 2)}) ${limitedDigits.slice(2, 6)}-${limitedDigits.slice(6)}`
+  } else {
+    return `(${limitedDigits.slice(0, 2)}) ${limitedDigits.slice(2, 7)}-${limitedDigits.slice(7)}`
+  }
+}
+
+interface ValidationState {
+  fullName: { isValid: boolean; error: string }
+  email: { isValid: boolean; error: string }
+  phone: { isValid: boolean; error: string }
+  company: { isValid: boolean; error: string }
+}
+
+// Input field component with validation - moved outside to prevent re-renders
+const InputField = React.memo(({ 
+  label, 
+  type, 
+  value, 
+  field, 
+  placeholder, 
+  icon: Icon,
+  inputMode,
+  validation,
+  touched,
+  onInputChange,
+  onInputBlur
+}: {
+  label: string
+  type: string
+  value: string
+  field: keyof ValidationState
+  placeholder: string
+  icon: any
+  inputMode?: string
+  validation: ValidationState[keyof ValidationState]
+  touched: boolean
+  onInputChange: (field: keyof ValidationState, value: string) => void
+  onInputBlur: (field: keyof ValidationState) => void
+}) => {
+  const showError = touched && !validation.isValid && value
+  const showSuccess = touched && validation.isValid && value
+
+  return (
+    <div className="space-y-2">
+      <label className="text-base font-medium text-gray-300 flex items-center gap-2">
+        <Icon className="w-5 h-5" />
+        {label} *
+      </label>
+      <div className="relative">
+        <Input
+          type={type}
+          inputMode={inputMode as any}
+          value={value}
+          onChange={(e) => onInputChange(field, e.target.value)}
+          onBlur={() => onInputBlur(field)}
+          placeholder={placeholder}
+          className={`h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl pr-10 transition-all duration-200 ${
+            showError ? 'border-red-500 focus:border-red-500' :
+            showSuccess ? 'border-green-500 focus:border-green-500' : ''
+          }`}
+        />
+        
+        {/* Validation Icons */}
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+          {showError && (
+            <AlertCircle className="w-5 h-5 text-red-500" />
+          )}
+          {showSuccess && (
+            <Check className="w-5 h-5 text-green-500" />
+          )}
+        </div>
+      </div>
+      
+      {/* Error Message */}
+      <AnimatePresence>
+        {showError && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="text-sm text-red-400 flex items-center gap-1"
+          >
+            <AlertCircle className="w-4 h-4" />
+            {validation.error}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+})
 
 export default function ContactExperience() {
   const navigate = useNavigate()
@@ -36,14 +165,75 @@ export default function ContactExperience() {
     phone: '',
     company: ''
   })
+  
+  const [validation, setValidation] = useState<ValidationState>({
+    fullName: { isValid: false, error: '' },
+    email: { isValid: false, error: '' },
+    phone: { isValid: false, error: '' },
+    company: { isValid: false, error: '' }
+  })
+  
+  const [touched, setTouched] = useState({
+    fullName: false,
+    email: false,
+    phone: false,
+    company: false
+  })
+  
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+  // Real-time validation
+  useEffect(() => {
+    setValidation({
+      fullName: {
+        isValid: validateName(formData.fullName),
+        error: formData.fullName && !validateName(formData.fullName) ? 'Nome deve ter pelo menos 2 caracteres' : ''
+      },
+      email: {
+        isValid: validateEmail(formData.email),
+        error: formData.email && !validateEmail(formData.email) ? 'Email inválido' : ''
+      },
+      phone: {
+        isValid: validatePhone(formData.phone),
+        error: formData.phone && !validatePhone(formData.phone) ? 'Telefone deve ter 10 ou 11 dígitos' : ''
+      },
+      company: {
+        isValid: validateCompany(formData.company),
+        error: formData.company && !validateCompany(formData.company) ? 'Nome da empresa deve ter pelo menos 2 caracteres' : ''
+      }
+    })
+  }, [formData])
+
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    if (field === 'phone') {
+      // Apply phone mask
+      const maskedValue = formatPhoneNumber(value)
+      setFormData(prev => ({ ...prev, [field]: maskedValue }))
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }))
+    }
+  }
+
+  const handleInputBlur = (field: keyof typeof formData) => {
+    setTouched(prev => ({ ...prev, [field]: true }))
   }
 
   const handleSubmit = async () => {
+    // Mark all fields as touched for validation display
+    setTouched({
+      fullName: true,
+      email: true,
+      phone: true,
+      company: true
+    })
+
+    // Check if form is valid
+    const isFormValid = Object.values(validation).every(field => field.isValid)
+    if (!isFormValid) {
+      return
+    }
+
     setIsSubmitting(true)
     
     console.log('📝 [CONTACT-SUBMIT] Submitting contact form:', formData);
@@ -62,6 +252,13 @@ export default function ContactExperience() {
     
     console.log('✅ [CONTACT-SUBMIT] Journey saved with contact data');
     
+    // Trigger confetti celebration
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    })
+    
     // Simulate API call and navigate to success
     setTimeout(() => {
       setIsSubmitting(false)
@@ -70,7 +267,8 @@ export default function ContactExperience() {
     }, 2000)
   }
 
-  const isFormValid = formData.fullName && formData.email && formData.phone && formData.company
+  const isFormValid = Object.values(validation).every(field => field.isValid) && 
+                     Object.values(formData).every(value => value.trim() !== '')
 
   const backgroundStyle = getBackgroundStyle()
 
@@ -208,8 +406,6 @@ export default function ContactExperience() {
       className={backgroundStyle.className}
       style={backgroundStyle.style}
     >
-
-
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-6 xl:px-12 py-4 md:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -217,8 +413,6 @@ export default function ContactExperience() {
           transition={{ duration: 0.6 }}
           className="text-center mb-6 md:mb-8"
         >
-
-          
           <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4 leading-tight">
             Deixe seus dados para contato
           </h1>
@@ -243,64 +437,66 @@ export default function ContactExperience() {
               </CardHeader>
 
               <CardContent className="space-y-4">
-                {/* Name and Email Row - Single column on tablet for better keyboard experience */}
+                {/* Name and Email Row */}
                 <div className="grid gap-4 lg:grid-cols-2">
-                  <div className="space-y-2">
-                    <label className="text-base font-medium text-gray-300 flex items-center gap-2">
-                      <User className="w-5 h-5" />
-                      Nome Completo *
-                    </label>
-                    <Input
-                      value={formData.fullName}
-                      onChange={(e) => handleInputChange('fullName', e.target.value)}
-                      placeholder="Seu nome completo"
-                      className="h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
-                    />
-                  </div>
+                  <InputField
+                    label="Nome Completo"
+                    type="text"
+                    value={formData.fullName}
+                    field="fullName"
+                    placeholder="Seu nome completo"
+                    icon={User}
+                    inputMode="text"
+                    validation={validation.fullName}
+                    touched={touched.fullName}
+                    onInputChange={handleInputChange}
+                    onInputBlur={handleInputBlur}
+                  />
 
-                  <div className="space-y-2">
-                    <label className="text-base font-medium text-gray-300 flex items-center gap-2">
-                      <Mail className="w-5 h-5" />
-                      E-mail *
-                    </label>
-                    <Input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      placeholder="seu@email.com"
-                      className="h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
-                    />
-                  </div>
+                  <InputField
+                    label="E-mail"
+                    type="email"
+                    value={formData.email}
+                    field="email"
+                    placeholder="seu@email.com"
+                    icon={Mail}
+                    inputMode="email"
+                    validation={validation.email}
+                    touched={touched.email}
+                    onInputChange={handleInputChange}
+                    onInputBlur={handleInputBlur}
+                  />
                 </div>
 
-                {/* Phone and Company Row - Single column on tablet for better keyboard experience */}
+                {/* Phone and Company Row */}
                 <div className="grid gap-4 lg:grid-cols-2">
-                  <div className="space-y-2">
-                    <label className="text-base font-medium text-gray-300 flex items-center gap-2">
-                      <Phone className="w-5 h-5" />
-                      Telefone *
-                    </label>
-                    <Input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      placeholder="(11) 99999-9999"
-                      className="h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
-                    />
-                  </div>
+                  <InputField
+                    label="Telefone"
+                    type="tel"
+                    value={formData.phone}
+                    field="phone"
+                    placeholder="(11) 99999-9999"
+                    icon={Phone}
+                    inputMode="tel"
+                    validation={validation.phone}
+                    touched={touched.phone}
+                    onInputChange={handleInputChange}
+                    onInputBlur={handleInputBlur}
+                  />
 
-                  <div className="space-y-2">
-                    <label className="text-base font-medium text-gray-300 flex items-center gap-2">
-                      <Building className="w-5 h-5" />
-                      Empresa *
-                    </label>
-                    <Input
-                      value={formData.company}
-                      onChange={(e) => handleInputChange('company', e.target.value)}
-                      placeholder="Nome da sua empresa"
-                      className="h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl"
-                    />
-                  </div>
+                  <InputField
+                    label="Empresa"
+                    type="text"
+                    value={formData.company}
+                    field="company"
+                    placeholder="Nome da sua empresa"
+                    icon={Building}
+                    inputMode="text"
+                    validation={validation.company}
+                    touched={touched.company}
+                    onInputChange={handleInputChange}
+                    onInputBlur={handleInputBlur}
+                  />
                 </div>
 
                 {/* Submit Button */}
@@ -310,7 +506,9 @@ export default function ContactExperience() {
                     disabled={!isFormValid || isSubmitting}
                     variant="paypal-primary"
                     size="lg"
-                    className="w-full h-12 md:h-16 text-lg md:text-xl font-semibold"
+                    className={`w-full h-12 md:h-16 text-lg md:text-xl font-semibold transition-all duration-200 ${
+                      isFormValid ? 'transform hover:scale-[1.02]' : ''
+                    }`}
                   >
                     {isSubmitting ? (
                       <div className="flex items-center gap-3">
@@ -318,11 +516,33 @@ export default function ContactExperience() {
                         Enviando...
                       </div>
                     ) : isFormValid ? (
-                      'Enviar dados'
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5" />
+                        Enviar dados
+                      </div>
                     ) : (
-                      'Preencha os campos obrigatórios'
+                      'Preencha todos os campos obrigatórios'
                     )}
                   </Button>
+                </div>
+
+                {/* Form Progress Indicator */}
+                <div className="pt-2">
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+                    <div className="flex gap-1">
+                      {Object.entries(validation).map(([field, { isValid }], index) => (
+                        <div
+                          key={field}
+                          className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                            isValid ? 'bg-green-500' : 'bg-gray-600'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span>
+                      {Object.values(validation).filter(v => v.isValid).length}/4 campos preenchidos
+                    </span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
