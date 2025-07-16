@@ -89,7 +89,7 @@ export default function BraintreeIntroExperience() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-blue-400/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
               <div className="relative p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 h-full flex items-center">
                 <img 
-                  src="/src/assets/braintree-checkout-1.png" 
+                  src={braintreeData.media.checkout1} 
                   alt="Braintree Checkout Interface" 
                   className="w-full h-auto rounded-xl"
                 />
@@ -100,7 +100,7 @@ export default function BraintreeIntroExperience() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
               <div className="relative p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 h-full flex items-center">
                 <img 
-                  src="/src/assets/braintree-checkout-2.png" 
+                  src={braintreeData.media.checkout2} 
                   alt="Braintree Advanced Features" 
                   className="w-full h-auto rounded-xl"
                 />

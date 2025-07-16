@@ -77,7 +77,7 @@ export default function PPCPIntroExperience() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-400/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
               <div className="relative p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
                 <img 
-                  src="/src/assets/pagamento1.png" 
+                  src={SOLUTIONS_CONTENT.solutions['complete-payments'].media.pagamento1} 
                   alt="PayPal Complete Payments Interface" 
                   className="w-full h-auto rounded-xl"
                 />
@@ -88,7 +88,7 @@ export default function PPCPIntroExperience() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300"></div>
               <div className="relative p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
                 <img 
-                  src="/src/assets/pagamento2.png" 
+                  src={SOLUTIONS_CONTENT.solutions['complete-payments'].media.pagamento2} 
                   alt="PayPal Mobile Experience" 
                   className="w-full h-auto rounded-xl"
                 />

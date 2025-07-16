@@ -27,3 +27,4 @@ dist-ssr
 routeTree.gen.ts
 .tanstack
 legacy-read-only/**
+.vercel
