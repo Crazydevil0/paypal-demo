@@ -1,9 +1,10 @@
-import React from 'react'
 import { motion } from 'framer-motion'
 import { useDesignSystem } from '@/providers/ThemeProvider'
 import { getBusinessIcon, getAvatar, getIconSize } from '@/lib/icons'
 import type { BusinessIconName, AvatarName } from '@/lib/icons'
-import { Card } from '@/components/ui/card'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 
 /**
  * Demo component showcasing the PayPal Design System

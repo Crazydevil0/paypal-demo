@@ -11,7 +11,6 @@ import { GradientHighlight } from '@/components/ui/GradientHighlight'
 const WelcomeExperience: React.FC = () => {
   const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
-  const { colors } = useDesignSystem();
   const { getBackgroundStyle } = useBackground();
 
   useEffect(() => {

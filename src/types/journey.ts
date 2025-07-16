@@ -12,6 +12,8 @@ export type BusinessChallenge =
 
 export type PayPalSolution = 'complete-payments' | 'braintree'
 
+export type SyncStatus = 'synced' | 'pending' | 'syncing' | 'error' | 'offline'
+
 export interface ContactInfo {
   fullName?: string
   email?: string
@@ -28,6 +30,9 @@ export interface JourneyData {
   startedAt: Date
   completedAt?: Date
 }
+
+// Alias for backward compatibility
+export type Journey = JourneyData
 
 export interface JourneyContextType {
   data: JourneyData

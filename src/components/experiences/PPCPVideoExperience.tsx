@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
-import { ArrowRight, ArrowLeft } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { SOLUTIONS_CONTENT } from '@/lib/content'
 import { useBackground } from '@/hooks/useBackground'
 
@@ -28,10 +28,6 @@ export default function PPCPVideoExperience() {
 
   const handleContinue = () => {
     navigate({ to: '/ppcp-benefits' })
-  }
-
-  const handleBackToIntro = () => {
-    navigate({ to: '/ppcp-intro' })
   }
 
   const backgroundStyle = getBackgroundStyle()

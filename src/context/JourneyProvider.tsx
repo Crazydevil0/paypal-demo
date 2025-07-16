@@ -35,8 +35,8 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
     });
     
     try {
-      // Import offline storage dynamically to avoid SSR issues
-      const { offlineStorage } = await import('@/lib/offline-storage')
+      // Import sync service dynamically to avoid SSR issues
+      const { syncService } = await import('@/lib/sync-service')
       
       // Mark as completed
       const completedJourney = { 
@@ -44,21 +44,17 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
         completedAt: currentData.completedAt || new Date() 
       }
       
-      console.log('💾 [JOURNEY-SAVE] Saving to offline storage with contact:', completedJourney.contact);
+      console.log('💾 [JOURNEY-SAVE] Saving journey with sync service:', completedJourney.contact);
       
-      // Save to enhanced offline storage
-      const offlineJourney = await offlineStorage.saveJourney(completedJourney)
+      // Save using sync service which handles both local storage and immediate sync
+      const result = await syncService.saveJourney(completedJourney)
       
-      // Update state
-      setData(completedJourney)
-      
-      console.log('✅ [JOURNEY-SAVE] Journey saved successfully:', {
-        localId: offlineJourney.localId,
-        profile: offlineJourney.profile,
-        syncStatus: offlineJourney.syncStatus,
-        hasContact: !!offlineJourney.contact,
-        contactKeys: offlineJourney.contact ? Object.keys(offlineJourney.contact) : []
-      });
+      if (result.success) {
+        console.log('✅ [JOURNEY-SAVE] Journey saved successfully with ID:', result.id);
+      } else {
+        console.error('❌ [JOURNEY-SAVE] Failed to save journey:', result.error);
+        throw new Error(result.error)
+      }
     } catch (error) {
       console.error('❌ [JOURNEY-SAVE] Failed to save journey:', error)
       throw error

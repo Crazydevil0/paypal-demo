@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { 
-  ArrowRight, 
   Play,
   Users,
   BarChart3
@@ -18,7 +17,6 @@ export default function BraintreeIntroExperience() {
   const navigate = useNavigate()
   const { updateData } = useJourney()
   const { getBackgroundStyle } = useBackground()
-  const [selectedVideoType, setSelectedVideoType] = useState<'customer' | 'merchant' | null>(null)
 
   const braintreeData = SOLUTIONS_CONTENT.solutions.braintree
   const braintreeFeatures = braintreeData.mainBenefits
@@ -32,7 +30,6 @@ export default function BraintreeIntroExperience() {
   }
 
   const handleVideoSelect = (videoType: 'customer' | 'merchant') => {
-    setSelectedVideoType(videoType)
     navigate({ to: `/braintree-video/${videoType}` })
   }
 

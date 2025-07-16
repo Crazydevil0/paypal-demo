@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, ArrowLeft } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { SOLUTIONS_CONTENT } from '@/lib/content'
 import { useBackground } from '@/hooks/useBackground'
@@ -57,16 +57,11 @@ export default function BraintreeVideoExperience() {
     navigate({ to: '/braintree-benefits' })
   }
 
-  const handleBackToIntro = () => {
-    navigate({ to: '/braintree-intro' })
-  }
-
   const handleSwitchVideo = () => {
     navigate({ to: `/braintree-video/${otherVideoType}` })
   }
 
   // Check if both videos have been watched
-  const bothVideosWatched = watchedVideos.size === 2
   const otherVideoWatched = watchedVideos.has(otherVideoType)
 
   const backgroundStyle = getBackgroundStyle()

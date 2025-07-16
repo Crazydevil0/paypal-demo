@@ -158,12 +158,27 @@ class OfflineStorageManager {
 
   // Sync timestamp management
   async setLastSyncTimestamp(timestamp: Date): Promise<void> {
-    await localforage.setItem(STORAGE_KEYS.LAST_SYNC, timestamp.toISOString());
+    await localforage.setItem('lastSyncTimestamp', timestamp.toISOString())
   }
 
   async getLastSyncTimestamp(): Promise<Date | null> {
-    const timestamp = await localforage.getItem<string>(STORAGE_KEYS.LAST_SYNC);
-    return timestamp ? new Date(timestamp) : null;
+    const timestamp = await localforage.getItem<string>('lastSyncTimestamp')
+    return timestamp ? new Date(timestamp) : null
+  }
+
+  async getPendingSync(): Promise<any[]> {
+    const pendingSync = await localforage.getItem<any[]>('pendingSync')
+    return pendingSync || []
+  }
+
+  async savePendingSync(items: any[]): Promise<void> {
+    await localforage.setItem('pendingSync', items)
+  }
+
+  async saveSalesman(salesman: any): Promise<void> {
+    const salesmen = await localforage.getItem<any[]>('salesmen') || []
+    salesmen.push(salesman)
+    await localforage.setItem('salesmen', salesmen)
   }
 
   // Data export for backup/transfer
@@ -222,16 +237,16 @@ class OfflineStorageManager {
     
     // Use dynamic import to avoid circular dependency
     import('./sync-service').then(({ triggerImmediateSync }) => {
-      triggerImmediateSync().then(success => {
+      triggerImmediateSync().then((success: boolean) => {
         if (success) {
           console.log('✅ [IMMEDIATE-SYNC] Immediate sync completed successfully');
         } else {
           console.log('⏳ [IMMEDIATE-SYNC] Immediate sync skipped (sync in progress or offline)');
         }
-      }).catch(error => {
+      }).catch((error: any) => {
         console.warn('❌ [IMMEDIATE-SYNC] Immediate sync failed:', error);
       });
-    }).catch(error => {
+    }).catch((error: any) => {
       console.warn('❌ [IMMEDIATE-SYNC] Could not import sync service:', error);
     });
   }
