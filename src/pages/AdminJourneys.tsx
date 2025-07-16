@@ -105,8 +105,8 @@ export default function AdminJourneys() {
           );
         },
         sortingFn: (a, b) => {
-          const aVal = (a.getValue() as string[]) || [];
-          const bVal = (b.getValue() as string[]) || [];
+          const aVal = (a.getValue('channels') as string[]) || [];
+          const bVal = (b.getValue('channels') as string[]) || [];
           return (aVal.length ? aVal.join(',') : '').localeCompare(bVal.length ? bVal.join(',') : '');
         },
       },
@@ -131,8 +131,8 @@ export default function AdminJourneys() {
           );
         },
         sortingFn: (a, b) => {
-          const aVal = (a.getValue() as string[]) || [];
-          const bVal = (b.getValue() as string[]) || [];
+          const aVal = (a.getValue('challenges') as string[]) || [];
+          const bVal = (b.getValue('challenges') as string[]) || [];
           return (aVal.length ? aVal.join(',') : '').localeCompare(bVal.length ? bVal.join(',') : '');
         },
       },

@@ -4,13 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm-run-all --parallel dev:frontend dev:backend",
-    "dev:frontend": "vite --open",
-    "dev:backend": "convex dev",
-    "dev:convex": "convex dev",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:vercel": "vercel --prod",
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

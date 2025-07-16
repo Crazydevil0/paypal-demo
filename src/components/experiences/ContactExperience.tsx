@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { 
   Mail, 
@@ -14,7 +13,6 @@ import {
   Sparkles,
   Trophy,
   Gift,
-  Zap,
   QrCode,
   Calendar,
   MessageSquare,
@@ -23,7 +21,6 @@ import {
 } from 'lucide-react'
 import { useJourney } from '@/context/JourneyProvider'
 import { useNavigate } from '@tanstack/react-router'
-import { GradientHighlight } from '@/components/ui/GradientHighlight'
 import { useBackground } from '@/hooks/useBackground'
 import confetti from 'canvas-confetti'
 import React from 'react'
@@ -156,7 +153,7 @@ const InputField = React.memo(({
 
 export default function ContactExperience() {
   const navigate = useNavigate()
-  const { data, updateData, saveJourney } = useJourney()
+  const { updateData, saveJourney } = useJourney()
   const { getBackgroundStyle } = useBackground()
   
   const [formData, setFormData] = useState({
@@ -530,7 +527,7 @@ export default function ContactExperience() {
                 <div className="pt-2">
                   <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
                     <div className="flex gap-1">
-                      {Object.entries(validation).map(([field, { isValid }], index) => (
+                      {Object.entries(validation).map(([field, { isValid }]) => (
                         <div
                           key={field}
                           className={`w-2 h-2 rounded-full transition-colors duration-200 ${
