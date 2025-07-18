@@ -51,6 +51,9 @@ export const MEDIA = {
     braintreeMerchantDashboard: new URL('../assets/Braintree Merchant Dashboard.mov', import.meta.url).href,
     braintreeDCC: new URL('../assets/Braintree DCC.mov', import.meta.url).href,
     bcdcCheckout: new URL('../assets/BCDC Checkout.mov', import.meta.url).href,
+    // New single videos
+    ppcpCompletePayments: new URL('../assets/PayPal Complete Payments.mp4', import.meta.url).href,
+    braintreeDemo: new URL('../assets/PayPal Braintree.mp4', import.meta.url).href,
   }
 } as const
 
@@ -226,7 +229,7 @@ export const SOLUTIONS_CONTENT = {
         phonePayment: MEDIA.products.phonePayment,
         pagamento1: MEDIA.products.pagamento1,
         pagamento2: MEDIA.products.pagamento2,
-        checkoutVideo: MEDIA.videos.bcdcCheckout
+        checkoutVideo: MEDIA.videos.ppcpCompletePayments
       }
     },
     'braintree': {
@@ -274,8 +277,7 @@ export const SOLUTIONS_CONTENT = {
       media: {
         checkout1: MEDIA.products.braintreeCheckout1,
         checkout2: MEDIA.products.braintreeCheckout2,
-        dashboardVideo: MEDIA.videos.braintreeMerchantDashboard,
-        dccVideo: MEDIA.videos.braintreeDCC
+        demoVideo: MEDIA.videos.braintreeDemo
       }
     }
   }

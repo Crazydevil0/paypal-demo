@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { 
   Play,
-  Users,
-  BarChart3
+  ArrowRight
 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { GradientHighlight } from '@/components/ui/GradientHighlight'
@@ -25,12 +24,12 @@ export default function BraintreeIntroExperience() {
     updateData({ solution: 'braintree' })
   }, [updateData])
 
-  const handleContinue = () => {
-    navigate({ to: '/braintree-benefits' })
+  const handleVideoSelection = () => {
+    navigate({ to: '/braintree-video' })
   }
 
-  const handleVideoSelect = (videoType: 'customer' | 'merchant') => {
-    navigate({ to: `/braintree-video/${videoType}` })
+  const handleSkipVideo = () => {
+    navigate({ to: '/braintree-benefits' })
   }
 
   const backgroundStyle = getBackgroundStyle()
@@ -114,91 +113,31 @@ export default function BraintreeIntroExperience() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.6 }}
-          className="space-y-8"
+          className="text-center space-y-6"
         >
-          <div className="text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Escolha sua <GradientHighlight>experiência</GradientHighlight>
-            </h2>
-            <p className="text-lg text-gray-300 mb-8">
-              Veja como o PayPal Braintree funciona na prática
-            </p>
-          </div>
-
-          {/* Video Selection Cards */}
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            {/* Customer Experience Video */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.4, duration: 0.6 }}
-            >
-              <Card 
-                className="cursor-pointer transition-all duration-300 border-2 border-white/10 hover:border-blue-400/50 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:scale-105 group"
-                onClick={() => handleVideoSelect('customer')}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="bg-blue-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-500 transition-colors">
-                    <Users className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-3">
-                    Experiência do Cliente
-                  </h3>
-                  <p className="text-gray-300 mb-4 leading-relaxed">
-                    Veja como seus clientes vivenciam um checkout rápido e seguro com o Braintree
-                  </p>
-                  <div className="flex items-center justify-center gap-2 text-blue-300 font-semibold">
-                    <Play className="w-4 h-4" />
-                    <span>Assistir vídeo</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Merchant Dashboard Video */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.6, duration: 0.6 }}
-            >
-              <Card 
-                className="cursor-pointer transition-all duration-300 border-2 border-white/10 hover:border-blue-400/50 bg-white/5 backdrop-blur-xl hover:bg-white/10 hover:scale-105 group"
-                onClick={() => handleVideoSelect('merchant')}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="bg-blue-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-500 transition-colors">
-                    <BarChart3 className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-3">
-                    Dashboard do Comerciante
-                  </h3>
-                  <p className="text-gray-300 mb-4 leading-relaxed">
-                    Descubra as ferramentas de gestão e análise disponíveis no painel do Braintree
-                  </p>
-                  <div className="flex items-center justify-center gap-2 text-blue-300 font-semibold">
-                    <Play className="w-4 h-4" />
-                    <span>Assistir vídeo</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-
-          {/* Skip Option */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.8, duration: 0.6 }}
-            className="text-center"
-          >
+          <div>
+            <h3 className="text-xl font-semibold text-white mb-6">
+              Veja como funciona na prática
+            </h3>
+            
             <Button
-              onClick={handleContinue}
-              variant="ghost"
-              className="border border-white/30 text-white hover:bg-white/10 hover:border-white/50 hover:text-white"
+              onClick={handleVideoSelection}
+              variant="paypal-primary"
+              className="group mb-4"
             >
-              Pular vídeos e continuar
+              <Play className="mr-2 w-5 h-5" />
+              Assistir demonstração
             </Button>
-          </motion.div>
+          </div>
+          
+          <Button
+            onClick={handleSkipVideo}
+            variant="ghost"
+            className="text-white hover:text-white hover:bg-white/10"
+          >
+            Pular vídeo e ver benefícios
+            <ArrowRight className="ml-2 w-4 h-4" />
+          </Button>
         </motion.div>
 
         {/* Footer with asterisk note */}

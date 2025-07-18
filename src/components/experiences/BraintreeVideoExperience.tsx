@@ -1,68 +1,34 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
-import { useNavigate, useParams } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { SOLUTIONS_CONTENT } from '@/lib/content'
 import { useBackground } from '@/hooks/useBackground'
 
 export default function BraintreeVideoExperience() {
   const navigate = useNavigate()
-  const { videoType } = useParams({ from: '/braintree-video/$videoType' })
   const { getBackgroundStyle, isGradientBackground } = useBackground()
   const videoRef = useRef<HTMLVideoElement>(null)
   
-  const [watchedVideos, setWatchedVideos] = useState<Set<string>>(new Set())
-  
   // Get video data from content
   const braintreeData = SOLUTIONS_CONTENT.solutions.braintree
-  const media = braintreeData.media
-  
-  // Current video info
-  const currentVideoData = videoType === 'customer' 
-    ? { 
-        title: 'Experiência do Cliente', 
-        src: media.dccVideo,
-        description: 'Veja como seus clientes vivenciam um checkout rápido e seguro'
-      }
-    : { 
-        title: 'Dashboard do Comerciante', 
-        src: media.dashboardVideo,
-        description: 'Descubra as ferramentas de gestão e análise disponíveis'
-      }
-  
-  // Other video info
-  const otherVideoType = videoType === 'customer' ? 'merchant' : 'customer'
-  const otherVideoTitle = otherVideoType === 'customer' ? 'Experiência do Cliente' : 'Dashboard do Comerciante'
+  const demoVideo = braintreeData.media.demoVideo
 
   useEffect(() => {
     // Auto-play the video when component mounts
     if (videoRef.current) {
-      videoRef.current.load() // Force reload to show new video
+      videoRef.current.play().catch(console.error)
     }
-  }, [videoType])
+  }, [])
 
   const handleVideoEnd = () => {
-    const newWatchedVideos = new Set(watchedVideos)
-    newWatchedVideos.add(videoType)
-    setWatchedVideos(newWatchedVideos)
-    
-    // If both videos have been watched, go to benefits
-    if (newWatchedVideos.size === 2) {
-      navigate({ to: '/braintree-benefits' })
-    }
+    navigate({ to: '/braintree-benefits' })
   }
 
   const handleContinue = () => {
     navigate({ to: '/braintree-benefits' })
   }
-
-  const handleSwitchVideo = () => {
-    navigate({ to: `/braintree-video/${otherVideoType}` })
-  }
-
-  // Check if both videos have been watched
-  const otherVideoWatched = watchedVideos.has(otherVideoType)
 
   const backgroundStyle = getBackgroundStyle()
 
@@ -94,10 +60,10 @@ export default function BraintreeVideoExperience() {
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              {currentVideoData.title}
+              Veja como funciona na prática
             </h2>
-            <p className="text-xl text-gray-300">
-              {currentVideoData.description}
+            <p className="text-xl text-blue-300">
+              Experiência completa do PayPal Braintree
             </p>
           </motion.div>
 
@@ -109,7 +75,6 @@ export default function BraintreeVideoExperience() {
             transition={{ delay: 0.3, duration: 0.6 }}
           >
             <video
-              key={videoType} // Force re-render when video type changes
               ref={videoRef}
               className="max-w-[95vw] max-h-[85vh] w-auto h-auto rounded-2xl shadow-2xl border border-white/10"
               controls
@@ -117,34 +82,27 @@ export default function BraintreeVideoExperience() {
               muted
               playsInline
               onEnded={handleVideoEnd}
+              key="braintree-video"
             >
-              <source src={currentVideoData.src} type="video/mp4" />
+              <source src={demoVideo} type="video/mp4" />
               Seu navegador não suporta o elemento de vídeo.
             </video>
           </motion.div>
 
-          {/* Action Buttons */}
+          {/* Continue Button */}
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex justify-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
             <Button
-              onClick={handleSwitchVideo}
-              variant="ghost"
-              className="border border-white/30 text-white hover:bg-white/10 hover:border-white/50 hover:text-white"
-            >
-              {otherVideoWatched ? 'Ver novamente: ' : 'Próximo: '}{otherVideoTitle}
-            </Button>
-
-            <Button
               onClick={handleContinue}
               variant="paypal-primary"
               className="group"
             >
-              Continuar
-              <ArrowRight className="w-4 h-4 ml-2" />
+              Continuar para benefícios
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>
         </motion.div>

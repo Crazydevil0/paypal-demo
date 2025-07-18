@@ -19,11 +19,11 @@ import { Route as PpcpBenefitsRouteImport } from './routes/ppcp-benefits'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as ChallengesRouteImport } from './routes/challenges'
+import { Route as BraintreeVideoRouteImport } from './routes/braintree-video'
 import { Route as BraintreeIntroRouteImport } from './routes/braintree-intro'
 import { Route as BraintreeBenefitsRouteImport } from './routes/braintree-benefits'
 import { Route as AdminJourneysRouteImport } from './routes/admin-journeys'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as BraintreeVideoVideoTypeRouteImport } from './routes/braintree-video.$videoType'
 
 const SuccessRoute = SuccessRouteImport.update({
   id: '/success',
@@ -75,6 +75,11 @@ const ChallengesRoute = ChallengesRouteImport.update({
   path: '/challenges',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BraintreeVideoRoute = BraintreeVideoRouteImport.update({
+  id: '/braintree-video',
+  path: '/braintree-video',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BraintreeIntroRoute = BraintreeIntroRouteImport.update({
   id: '/braintree-intro',
   path: '/braintree-intro',
@@ -95,17 +100,13 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BraintreeVideoVideoTypeRoute = BraintreeVideoVideoTypeRouteImport.update({
-  id: '/braintree-video/$videoType',
-  path: '/braintree-video/$videoType',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin-journeys': typeof AdminJourneysRoute
   '/braintree-benefits': typeof BraintreeBenefitsRoute
   '/braintree-intro': typeof BraintreeIntroRoute
+  '/braintree-video': typeof BraintreeVideoRoute
   '/challenges': typeof ChallengesRoute
   '/channels': typeof ChannelsRoute
   '/contact': typeof ContactRoute
@@ -116,13 +117,13 @@ export interface FileRoutesByFullPath {
   '/solutions': typeof SolutionsRoute
   '/status': typeof StatusRoute
   '/success': typeof SuccessRoute
-  '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin-journeys': typeof AdminJourneysRoute
   '/braintree-benefits': typeof BraintreeBenefitsRoute
   '/braintree-intro': typeof BraintreeIntroRoute
+  '/braintree-video': typeof BraintreeVideoRoute
   '/challenges': typeof ChallengesRoute
   '/channels': typeof ChannelsRoute
   '/contact': typeof ContactRoute
@@ -133,7 +134,6 @@ export interface FileRoutesByTo {
   '/solutions': typeof SolutionsRoute
   '/status': typeof StatusRoute
   '/success': typeof SuccessRoute
-  '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,6 +141,7 @@ export interface FileRoutesById {
   '/admin-journeys': typeof AdminJourneysRoute
   '/braintree-benefits': typeof BraintreeBenefitsRoute
   '/braintree-intro': typeof BraintreeIntroRoute
+  '/braintree-video': typeof BraintreeVideoRoute
   '/challenges': typeof ChallengesRoute
   '/channels': typeof ChannelsRoute
   '/contact': typeof ContactRoute
@@ -151,7 +152,6 @@ export interface FileRoutesById {
   '/solutions': typeof SolutionsRoute
   '/status': typeof StatusRoute
   '/success': typeof SuccessRoute
-  '/braintree-video/$videoType': typeof BraintreeVideoVideoTypeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -160,6 +160,7 @@ export interface FileRouteTypes {
     | '/admin-journeys'
     | '/braintree-benefits'
     | '/braintree-intro'
+    | '/braintree-video'
     | '/challenges'
     | '/channels'
     | '/contact'
@@ -170,13 +171,13 @@ export interface FileRouteTypes {
     | '/solutions'
     | '/status'
     | '/success'
-    | '/braintree-video/$videoType'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin-journeys'
     | '/braintree-benefits'
     | '/braintree-intro'
+    | '/braintree-video'
     | '/challenges'
     | '/channels'
     | '/contact'
@@ -187,13 +188,13 @@ export interface FileRouteTypes {
     | '/solutions'
     | '/status'
     | '/success'
-    | '/braintree-video/$videoType'
   id:
     | '__root__'
     | '/'
     | '/admin-journeys'
     | '/braintree-benefits'
     | '/braintree-intro'
+    | '/braintree-video'
     | '/challenges'
     | '/channels'
     | '/contact'
@@ -204,7 +205,6 @@ export interface FileRouteTypes {
     | '/solutions'
     | '/status'
     | '/success'
-    | '/braintree-video/$videoType'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -212,6 +212,7 @@ export interface RootRouteChildren {
   AdminJourneysRoute: typeof AdminJourneysRoute
   BraintreeBenefitsRoute: typeof BraintreeBenefitsRoute
   BraintreeIntroRoute: typeof BraintreeIntroRoute
+  BraintreeVideoRoute: typeof BraintreeVideoRoute
   ChallengesRoute: typeof ChallengesRoute
   ChannelsRoute: typeof ChannelsRoute
   ContactRoute: typeof ContactRoute
@@ -222,7 +223,6 @@ export interface RootRouteChildren {
   SolutionsRoute: typeof SolutionsRoute
   StatusRoute: typeof StatusRoute
   SuccessRoute: typeof SuccessRoute
-  BraintreeVideoVideoTypeRoute: typeof BraintreeVideoVideoTypeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -297,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChallengesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/braintree-video': {
+      id: '/braintree-video'
+      path: '/braintree-video'
+      fullPath: '/braintree-video'
+      preLoaderRoute: typeof BraintreeVideoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/braintree-intro': {
       id: '/braintree-intro'
       path: '/braintree-intro'
@@ -325,13 +332,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/braintree-video/$videoType': {
-      id: '/braintree-video/$videoType'
-      path: '/braintree-video/$videoType'
-      fullPath: '/braintree-video/$videoType'
-      preLoaderRoute: typeof BraintreeVideoVideoTypeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -340,6 +340,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminJourneysRoute: AdminJourneysRoute,
   BraintreeBenefitsRoute: BraintreeBenefitsRoute,
   BraintreeIntroRoute: BraintreeIntroRoute,
+  BraintreeVideoRoute: BraintreeVideoRoute,
   ChallengesRoute: ChallengesRoute,
   ChannelsRoute: ChannelsRoute,
   ContactRoute: ContactRoute,
@@ -350,7 +351,6 @@ const rootRouteChildren: RootRouteChildren = {
   SolutionsRoute: SolutionsRoute,
   StatusRoute: StatusRoute,
   SuccessRoute: SuccessRoute,
-  BraintreeVideoVideoTypeRoute: BraintreeVideoVideoTypeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
