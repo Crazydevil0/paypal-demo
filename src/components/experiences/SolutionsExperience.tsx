@@ -42,11 +42,11 @@ export default function SolutionsExperience() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
             Sua empresa está pronta para o futuro?
           </h1>
           
-          <p className="text-2xl md:text-4xl lg:text-5xl leading-relaxed font-semibold"
+          <p className="text-xl md:text-3xl lg:text-4xl leading-relaxed font-semibold"
              style={{ color: colors.paypal.lightBlue }}>
             Descubra a solução ideal para seu negócio:
           </p>

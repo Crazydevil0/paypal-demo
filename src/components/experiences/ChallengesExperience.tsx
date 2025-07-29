@@ -129,7 +129,7 @@ export default function ChallengesExperience() {
 
   return (
     <div 
-      className={backgroundStyle.className}
+      className={`${backgroundStyle.className} challenges-page`}
       style={backgroundStyle.style}
     >
       {/* Background Elements */}

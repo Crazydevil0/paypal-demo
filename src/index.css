@@ -324,10 +324,6 @@
     .challenges-page .gap-8 {
       gap: 14px !important;
     }
-    
-    .challenges-page .min-h-\\[100px\\] {
-      min-height: 80px !important;
-    }
 
     /* Video pages optimization for 1200x800 */
     .video-page {
