@@ -5,10 +5,12 @@ import { useEffect, useRef } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { SOLUTIONS_CONTENT } from '@/lib/content'
 import { useBackground } from '@/hooks/useBackground'
+import { useTabletOptimization } from '@/hooks/useTabletOptimization'
 
 export default function PPCPVideoExperience() {
   const navigate = useNavigate()
   const { getBackgroundStyle, isGradientBackground } = useBackground()
+  const { getContainerClass, getHeadingClass, getVideoClass } = useTabletOptimization()
   const videoRef = useRef<HTMLVideoElement>(null)
   
   // Get video data from content
@@ -45,7 +47,7 @@ export default function PPCPVideoExperience() {
         </div>
       )}
 
-      <div className="relative z-10 w-full max-w-1440 mx-auto px-4 md:px-8 xl:px-16 py-12">
+      <div className={getContainerClass("relative z-10 w-full max-w-1440 mx-auto px-4 md:px-8 xl:px-16 py-12")}>
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,7 +61,7 @@ export default function PPCPVideoExperience() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className={getHeadingClass(2, "text-3xl md:text-4xl font-bold text-white mb-4")}>
               Veja como funciona na prática
             </h2>
             <p className="text-xl text-blue-300">
@@ -76,7 +78,7 @@ export default function PPCPVideoExperience() {
           >
             <video
               ref={videoRef}
-              className="max-w-[95vw] max-h-[85vh] w-auto h-auto rounded-2xl shadow-2xl border border-white/10"
+              className={getVideoClass("max-w-[95vw] max-h-[85vh] w-auto h-auto rounded-2xl shadow-2xl border border-white/10")}
               controls
               autoPlay
               muted

@@ -139,7 +139,7 @@ export default function ChannelsExperience() {
 
   return (
     <div 
-      className={backgroundStyle.className}
+      className={`${backgroundStyle.className} channels-page`}
       style={backgroundStyle.style}
     >
       {/* Background Elements */}
