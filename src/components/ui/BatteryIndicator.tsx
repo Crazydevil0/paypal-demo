@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Battery, BatteryLow, Zap, AlertTriangle } from 'lucide-react'
+import { Battery, BatteryLow, Zap } from 'lucide-react'
 import { useBatteryStatus } from '@/hooks/useBatteryStatus'
 import { useTabletOptimization } from '@/hooks/useTabletOptimization'
 import { useLocation } from '@tanstack/react-router'
@@ -21,87 +21,81 @@ export function BatteryIndicator() {
   // Check if we're on the welcome page to adjust positioning
   const isWelcomePage = location.pathname === '/'
 
+  const getBatteryColor = () => {
+    if (isCritical) return 'text-red-400'
+    if (isLow) return 'text-yellow-400'
+    return 'text-green-400'
+  }
+
+  const getBatteryFillColor = () => {
+    if (isCritical) return 'bg-red-400'
+    if (isLow) return 'bg-yellow-400'
+    return 'bg-green-400'
+  }
+
+  const getBatteryIcon = () => {
+    if (charging) return <Zap className="w-4 h-4" />
+    if (isLow) return <BatteryLow className="w-4 h-4" />
+    return <Battery className="w-4 h-4" />
+  }
+
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      className={`fixed z-50 ${
-        isWelcomePage ? 'top-4 left-20' : 'top-4 left-4'
-      } backdrop-blur-xl bg-black/30 border border-white/20 rounded-full px-4 py-2 shadow-lg`}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: isWelcomePage ? 2 : 0 }}
+      className={`fixed z-40 ${
+        isWelcomePage 
+          ? 'top-4 left-20' // Position to the right of fullscreen button on welcome page
+          : 'top-4 left-4'  // Normal top-left position on other pages
+      }`}
     >
-      <div className="flex items-center gap-3">
-        {/* Charging indicator */}
-        {charging && (
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              rotate: [0, 5, -5, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            <Zap 
-              className="w-4 h-4 text-yellow-400" 
-              fill="currentColor"
-            />
-          </motion.div>
-        )}
-
-        {/* Modern circular battery indicator */}
-        <div className="relative">
-          {/* Background circle */}
-          <div className="w-8 h-8 rounded-full border-2 border-white/30" />
-          
-          {/* Battery fill with smooth animation */}
-          <motion.div
-            className={`absolute inset-0 rounded-full border-2 ${
-              isCritical
-                ? 'border-red-400 bg-red-400/20'
-                : isLow
-                ? 'border-orange-400 bg-orange-400/20'
-                : 'border-green-400 bg-green-400/20'
-            }`}
-            style={{
-              background: `conic-gradient(from 0deg, ${
-                isCritical
-                  ? '#f87171'
-                  : isLow
-                  ? '#fb923c'
-                  : '#4ade80'
-              } 0deg, ${
-                isCritical
-                  ? '#f87171'
-                  : isLow
-                  ? '#fb923c'
-                  : '#4ade80'
-              } ${batteryPercentage * 3.6}deg, transparent ${batteryPercentage * 3.6}deg)`,
-            }}
-            animate={charging ? {
-              opacity: [0.6, 1, 0.6],
-            } : {}}
-            transition={{
-              duration: 1.5,
-              repeat: charging ? Infinity : 0,
-              ease: "easeInOut"
-            }}
-          />
-          
-          {/* Center percentage */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`text-xs font-bold ${
-              isCritical
-                ? 'text-red-200'
-                : isLow
-                ? 'text-orange-200'
-                : 'text-green-200'
-            }`}>
-              {batteryPercentage}
-            </span>
+      <div className="bg-black/30 backdrop-blur-xl rounded-full border border-white/10 px-4 py-2 shadow-lg">
+        <div className="flex items-center gap-3">
+          {/* Battery Icon */}
+          <div className={`${getBatteryColor()} ${charging ? 'animate-pulse' : ''}`}>
+            {getBatteryIcon()}
           </div>
+          
+          {/* Modern Battery Level Bar */}
+          <div className="relative">
+            {/* Background track */}
+            <div className="w-12 h-2 bg-white/20 rounded-full overflow-hidden">
+              {/* Fill bar with smooth animation */}
+              <motion.div 
+                className={`h-full rounded-full ${getBatteryFillColor()} ${
+                  charging ? 'animate-pulse' : ''
+                }`}
+                initial={{ width: 0 }}
+                animate={{ width: `${batteryPercentage}%` }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              />
+            </div>
+            
+            {/* Charging shimmer effect */}
+            {charging && (
+              <motion.div
+                className="absolute inset-0 w-12 h-2 rounded-full overflow-hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                  animate={{ x: [-48, 48] }}
+                  transition={{ 
+                    repeat: Infinity, 
+                    duration: 1.5, 
+                    ease: "easeInOut" 
+                  }}
+                />
+              </motion.div>
+            )}
+          </div>
+          
+          {/* Percentage Text */}
+          <span className="text-xs text-white/90 font-medium min-w-[32px] text-right">
+            {batteryPercentage}%
+          </span>
         </div>
       </div>
     </motion.div>
