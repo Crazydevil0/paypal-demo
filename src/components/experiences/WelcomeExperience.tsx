@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from '@tanstack/react-router';
-import { ArrowRight, Maximize } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useDesignSystem } from '@/providers/ThemeProvider';
 import { useBackground } from '@/hooks/useBackground';
 import { WELCOME_CONTENT, MEDIA } from '@/lib/content';
@@ -23,39 +23,13 @@ const WelcomeExperience: React.FC = () => {
     navigate({ to: '/profile' });
   };
 
-  const handleFullscreen = () => {
-    try {
-      document.documentElement.requestFullscreen();
-    } catch (error) {
-      console.log('Fullscreen not supported or failed:', error);
-    }
-  };
-
-  const backgroundStyle = getBackgroundStyle()
+  const backgroundStyle = getBackgroundStyle();
   
   return (
     <div 
       className={`${backgroundStyle.className} relative`}
       style={backgroundStyle.style}
     >
-      {/* Fullscreen Button - Top Left */}
-      <motion.div 
-        className="absolute top-4 left-4 z-50"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 1.5 }}
-      >
-        <Button
-          onClick={handleFullscreen}
-          size="sm"
-          variant="ghost"
-          className="bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:border-white/40 backdrop-blur-sm"
-          title="Entrar em tela cheia"
-        >
-          <Maximize className="w-4 h-4" />
-        </Button>
-      </motion.div>
-
       {/* Main Flex Layout */}
       <div className="relative z-10 flex flex-col flex-1 justify-around min-h-screen">
         {/* Logo at top */}
