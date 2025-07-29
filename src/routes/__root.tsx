@@ -1,18 +1,19 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { ThemeProvider } from '@/providers/ThemeProvider'
+import { JourneyProvider } from '@/context/JourneyProvider'
 import { TopRightIndicators } from '@/components/ui/TopRightIndicators'
 import { HomeButton } from '@/components/ui/HomeButton'
-import { FullscreenButton } from '@/components/ui/FullscreenButton'
 
 export const Route = createRootRoute({
   component: () => (
     <ThemeProvider>
-      <div className="flex flex-col min-h-screen">
-        <Outlet />
-        <TopRightIndicators />
-        <HomeButton />
-        <FullscreenButton />
-      </div>
+      <JourneyProvider>
+        <div className="min-h-screen bg-background">
+          <TopRightIndicators />
+          <HomeButton />
+          <Outlet />
+        </div>
+      </JourneyProvider>
     </ThemeProvider>
   ),
 }) 
