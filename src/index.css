@@ -269,6 +269,66 @@
       gap: 16px !important;
     }
 
+    /* Challenges page optimization - slightly smaller than channels page */
+    .challenges-page {
+      padding: 14px !important;
+    }
+    
+    .challenges-page .text-center.mb-12 {
+      margin-bottom: 18px !important;
+    }
+    
+    .challenges-page .text-4xl.md\\:text-6xl {
+      font-size: 26px !important;
+      margin-bottom: 14px !important;
+    }
+    
+    .challenges-page .text-xl.md\\:text-2xl {
+      font-size: 15px !important;
+      margin-bottom: 18px !important;
+    }
+    
+    .challenges-page .grid.md\\:grid-cols-3 {
+      gap: 14px !important;
+    }
+    
+    .challenges-page .grid.grid-cols-2 {
+      gap: 14px !important;
+    }
+    
+    .challenges-page .p-6 {
+      padding: 10px !important;
+    }
+    
+    .challenges-page .p-8 {
+      padding: 10px !important;
+    }
+    
+    .challenges-page .text-2xl {
+      font-size: 17px !important;
+    }
+    
+    .challenges-page .text-lg {
+      font-size: 13px !important;
+    }
+    
+    .challenges-page .w-16.h-16 {
+      width: 44px !important;
+      height: 44px !important;
+    }
+    
+    .challenges-page .mb-8 {
+      margin-bottom: 14px !important;
+    }
+    
+    .challenges-page .gap-8 {
+      gap: 14px !important;
+    }
+    
+    .challenges-page .min-h-\\[100px\\] {
+      min-height: 80px !important;
+    }
+
     /* Video pages optimization for 1200x800 */
     .video-page {
       padding: 8px !important;
