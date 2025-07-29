@@ -199,23 +199,27 @@ export function useTabletOptimization() {
     return `${baseClass} ${contactClass} ${keyboardClass}`.trim()
   }
 
-  const getContactInputClass = (baseClass: string = '', isFocused: boolean = false) => {
-    const focusClass = isTablet && isKeyboardActive && isFocused ? 'focused-input' : ''
-    return `${baseClass} ${focusClass}`.trim()
-  }
-
   // Helper method to handle input focus for smooth keyboard experience
   const handleInputFocus = (inputElement: HTMLInputElement) => {
     if (!isTablet) return
     
-    // Add a slight delay to ensure keyboard appears
+    // iOS Safari workaround: briefly hide input to prevent scroll jump
+    const originalOpacity = inputElement.style.opacity
+    inputElement.style.opacity = '0'
+    
+    // Restore opacity immediately
     setTimeout(() => {
-      inputElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'nearest'
-      })
-    }, 100)
+      inputElement.style.opacity = originalOpacity || '1'
+      
+      // Then scroll into view with proper timing
+      setTimeout(() => {
+        inputElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'nearest'
+        })
+      }, 100)
+    }, 1)
   }
 
   return {
@@ -238,7 +242,6 @@ export function useTabletOptimization() {
     getProfileIconClass,
     getProfileCardTitleClass,
     getContactContainerClass,
-    getContactInputClass,
     handleInputFocus
   }
 }

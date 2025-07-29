@@ -104,23 +104,20 @@ const InputField = React.memo(({
 }) => {
   const showError = touched && !validation.isValid && value
   const showSuccess = touched && validation.isValid && value
-  const { isTablet, focusedInput, getContactInputClass, handleInputFocus } = tabletOptimization
-  const [isFocused, setIsFocused] = React.useState(false)
+  const { isTablet, handleInputFocus } = tabletOptimization
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(true)
     if (isTablet) {
       handleInputFocus(e.target)
     }
   }
 
   const handleBlur = () => {
-    setIsFocused(false)
     onInputBlur(field)
   }
 
   return (
-    <div className={`space-y-2 ${getContactInputClass('', isFocused)}`}>
+    <div className="space-y-2">
       <label className="text-base font-medium text-gray-300 flex items-center gap-2">
         <Icon className="w-5 h-5" />
         {label} *

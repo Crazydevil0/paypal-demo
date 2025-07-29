@@ -511,14 +511,9 @@
   }
 } 
 
-     /* Keyboard handling for contact form */
+     /* Keyboard handling for contact form - proper approach without transforms */
      .contact-page.keyboard-active {
-       padding-bottom: 280px !important;
-     }
-     
-     .contact-page.keyboard-active .focused-input {
-       transform: translateY(-120px) !important;
-       transition: transform 0.3s ease-in-out !important;
+       padding-bottom: 300px !important;
      }
      
      /* Enhanced visual feedback for tablet interactions */
@@ -526,24 +521,17 @@
        box-shadow: 0 0 0 3px rgba(0, 112, 224, 0.2) !important;
        border-color: #0070E0 !important;
        outline: none !important;
-     }
-     
-     .contact-page .focused-input input {
        background-color: rgba(255, 255, 255, 0.08) !important;
      }
      
-     /* Smooth transitions for all contact form elements */
-     .contact-page * {
-       transition: all 0.2s ease-in-out !important;
+     /* Smooth scroll behavior for inputs */
+     .contact-page {
+       scroll-behavior: smooth !important;
      }
      
      /* Reduced motion for users who prefer it */
      @media (prefers-reduced-motion: reduce) {
-       .contact-page * {
-         transition: none !important;
-       }
-       
-       .contact-page.keyboard-active .focused-input {
-         transform: none !important;
+       .contact-page {
+         scroll-behavior: auto !important;
        }
      } 
