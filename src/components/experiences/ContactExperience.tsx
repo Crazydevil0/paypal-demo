@@ -22,6 +22,7 @@ import {
 import { useJourney } from '@/context/JourneyProvider'
 import { useNavigate } from '@tanstack/react-router'
 import { useBackground } from '@/hooks/useBackground'
+import { useTabletOptimization } from '@/hooks/useTabletOptimization'
 import confetti from 'canvas-confetti'
 import React from 'react'
 
@@ -85,7 +86,8 @@ const InputField = React.memo(({
   validation,
   touched,
   onInputChange,
-  onInputBlur
+  onInputBlur,
+  tabletOptimization
 }: {
   label: string
   type: string
@@ -98,12 +100,27 @@ const InputField = React.memo(({
   touched: boolean
   onInputChange: (field: keyof ValidationState, value: string) => void
   onInputBlur: (field: keyof ValidationState) => void
+  tabletOptimization: ReturnType<typeof useTabletOptimization>
 }) => {
   const showError = touched && !validation.isValid && value
   const showSuccess = touched && validation.isValid && value
+  const { isTablet, focusedInput, getContactInputClass, handleInputFocus } = tabletOptimization
+  const [isFocused, setIsFocused] = React.useState(false)
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(true)
+    if (isTablet) {
+      handleInputFocus(e.target)
+    }
+  }
+
+  const handleBlur = () => {
+    setIsFocused(false)
+    onInputBlur(field)
+  }
 
   return (
-    <div className="space-y-2">
+    <div className={`space-y-2 ${getContactInputClass('', isFocused)}`}>
       <label className="text-base font-medium text-gray-300 flex items-center gap-2">
         <Icon className="w-5 h-5" />
         {label} *
@@ -114,7 +131,8 @@ const InputField = React.memo(({
           inputMode={inputMode as any}
           value={value}
           onChange={(e) => onInputChange(field, e.target.value)}
-          onBlur={() => onInputBlur(field)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           placeholder={placeholder}
           className={`h-12 md:h-14 text-base bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-paypal-light rounded-xl pr-10 transition-all duration-200 ${
             showError ? 'border-red-500 focus:border-red-500' :
@@ -155,6 +173,8 @@ export default function ContactExperience() {
   const navigate = useNavigate()
   const { updateData, saveJourney } = useJourney()
   const { getBackgroundStyle } = useBackground()
+  const tabletOptimization = useTabletOptimization()
+  const { getContactContainerClass } = tabletOptimization
   
   const [formData, setFormData] = useState({
     fullName: '',
@@ -400,7 +420,7 @@ export default function ContactExperience() {
 
   return (
     <div 
-      className={backgroundStyle.className}
+      className={getContactContainerClass(backgroundStyle.className)}
       style={backgroundStyle.style}
     >
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-6 xl:px-12 py-4 md:py-8">
@@ -448,6 +468,7 @@ export default function ContactExperience() {
                     touched={touched.fullName}
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
+                    tabletOptimization={tabletOptimization}
                   />
 
                   <InputField
@@ -462,6 +483,7 @@ export default function ContactExperience() {
                     touched={touched.email}
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
+                    tabletOptimization={tabletOptimization}
                   />
                 </div>
 
@@ -479,6 +501,7 @@ export default function ContactExperience() {
                     touched={touched.phone}
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
+                    tabletOptimization={tabletOptimization}
                   />
 
                   <InputField
@@ -493,6 +516,7 @@ export default function ContactExperience() {
                     touched={touched.company}
                     onInputChange={handleInputChange}
                     onInputBlur={handleInputBlur}
+                    tabletOptimization={tabletOptimization}
                   />
                 </div>
 

@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react'
 
 export function useTabletOptimization() {
   const [isTablet, setIsTablet] = useState(false)
+  const [isKeyboardActive, setIsKeyboardActive] = useState(false)
+  const [focusedInput, setFocusedInput] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
     const checkTabletResolution = () => {
       const width = window.innerWidth
       const height = window.innerHeight
       
-      // Check for 1200x800 tablet resolution (with some tolerance)
+      // Check for 1280x800 tablet resolution (with some tolerance)
       const isTabletResolution = 
-        width >= 1100 && width <= 1300 && 
-        height >= 700 && height <= 900
+        width >= 1200 && width <= 1350 && 
+        height >= 750 && height <= 850
       
       setIsTablet(isTabletResolution)
     }
@@ -26,6 +28,75 @@ export function useTabletOptimization() {
       window.removeEventListener('resize', checkTabletResolution)
     }
   }, [])
+
+  // Keyboard detection for tablets
+  useEffect(() => {
+    if (!isTablet) return
+
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        setIsKeyboardActive(true)
+        setFocusedInput(target)
+        
+        // Scroll the focused input into view with offset for keyboard
+        setTimeout(() => {
+          target.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest'
+          })
+        }, 300) // Delay to allow keyboard to appear
+      }
+    }
+
+    const handleFocusOut = (e: FocusEvent) => {
+      const target = e.target as HTMLElement
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        // Delay to avoid flickering when moving between inputs
+        setTimeout(() => {
+          if (!document.activeElement || 
+              (document.activeElement.tagName !== 'INPUT' && 
+               document.activeElement.tagName !== 'TEXTAREA')) {
+            setIsKeyboardActive(false)
+            setFocusedInput(null)
+          }
+        }, 100)
+      }
+    }
+
+    // Alternative: Listen for viewport height changes (more reliable for iOS)
+    const initialViewportHeight = window.visualViewport?.height || window.innerHeight
+    
+    const handleViewportChange = () => {
+      const currentHeight = window.visualViewport?.height || window.innerHeight
+      const heightDifference = initialViewportHeight - currentHeight
+      
+      // If viewport shrunk by more than 150px, assume keyboard is open
+      if (heightDifference > 150) {
+        setIsKeyboardActive(true)
+      } else {
+        setIsKeyboardActive(false)
+        setFocusedInput(null)
+      }
+    }
+
+    document.addEventListener('focusin', handleFocusIn)
+    document.addEventListener('focusout', handleFocusOut)
+    
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportChange)
+    }
+
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn)
+      document.removeEventListener('focusout', handleFocusOut)
+      
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleViewportChange)
+      }
+    }
+  }, [isTablet])
 
   // Return optimized classes for tablet
   const getContainerClass = (baseClass: string = '') => {
@@ -121,8 +192,36 @@ export function useTabletOptimization() {
       : baseClass
   }
 
+  // Contact page specific methods
+  const getContactContainerClass = (baseClass: string = '') => {
+    const contactClass = isTablet ? 'contact-page' : ''
+    const keyboardClass = isTablet && isKeyboardActive ? 'keyboard-active' : ''
+    return `${baseClass} ${contactClass} ${keyboardClass}`.trim()
+  }
+
+  const getContactInputClass = (baseClass: string = '', isFocused: boolean = false) => {
+    const focusClass = isTablet && isKeyboardActive && isFocused ? 'focused-input' : ''
+    return `${baseClass} ${focusClass}`.trim()
+  }
+
+  // Helper method to handle input focus for smooth keyboard experience
+  const handleInputFocus = (inputElement: HTMLInputElement) => {
+    if (!isTablet) return
+    
+    // Add a slight delay to ensure keyboard appears
+    setTimeout(() => {
+      inputElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      })
+    }, 100)
+  }
+
   return {
     isTablet,
+    isKeyboardActive,
+    focusedInput,
     getContainerClass,
     getHeadingClass,
     getTextClass,
@@ -137,6 +236,9 @@ export function useTabletOptimization() {
     getProfileCardClass,
     getProfileIconContainerClass,
     getProfileIconClass,
-    getProfileCardTitleClass
+    getProfileCardTitleClass,
+    getContactContainerClass,
+    getContactInputClass,
+    handleInputFocus
   }
 }

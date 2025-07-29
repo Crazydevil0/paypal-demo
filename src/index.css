@@ -172,8 +172,8 @@
     max-width: var(--max-width-1440);
   }
 
-  /* Profile page fix for 1200x800 - balanced sizing */
-  @media (width: 1200px) and (height: 800px) {
+  /* Profile page fix for 1280x800 - balanced sizing */
+  @media (width: 1280px) and (height: 800px) {
     .profile-page {
       padding: 16px !important;
     }
@@ -269,63 +269,61 @@
       gap: 16px !important;
     }
 
-    /* Challenges page optimization - slightly smaller than channels page */
+
+
+    /* Challenges page optimization for 1280x800 - slightly smaller */
     .challenges-page {
-      padding: 14px !important;
+      padding: 12px !important;
+    }
+
+    .challenges-page .text-xl {
+      font-size: 18px !important;
     }
     
     .challenges-page .text-center.mb-12 {
-      margin-bottom: 18px !important;
+      margin-bottom: 20px !important;
     }
     
-    .challenges-page .text-4xl.md\\:text-6xl {
-      font-size: 26px !important;
-      margin-bottom: 14px !important;
+    .challenges-page .text-4xl.md\:text-6xl {
+      font-size: 36px !important;
+      margin-bottom: 16px !important;
     }
     
-    .challenges-page .text-xl.md\\:text-2xl {
-      font-size: 15px !important;
-      margin-bottom: 18px !important;
+    .challenges-page .text-xl.md\:text-2xl {
+      font-size: 20px !important;
+      margin-bottom: 20px !important;
     }
     
-    .challenges-page .grid.md\\:grid-cols-3 {
+    .challenges-page .grid.md\:grid-cols-3 {
       gap: 14px !important;
-    }
-    
-    .challenges-page .grid.grid-cols-2 {
-      gap: 14px !important;
-    }
-    
-    .challenges-page .p-6 {
-      padding: 10px !important;
     }
     
     .challenges-page .p-8 {
-      padding: 10px !important;
+      padding: 8px !important;
     }
     
     .challenges-page .text-2xl {
-      font-size: 17px !important;
+      font-size: 18px !important;
     }
     
     .challenges-page .text-lg {
-      font-size: 13px !important;
+      font-size: 18px !important;
     }
     
     .challenges-page .w-16.h-16 {
-      width: 44px !important;
-      height: 44px !important;
+      width: 28px !important;
+      height: 28px !important;
     }
     
     .challenges-page .mb-8 {
-      margin-bottom: 14px !important;
+      margin-bottom: 18px !important;
     }
     
     .challenges-page .gap-8 {
-      gap: 14px !important;
+      gap: 12px !important;
     }
 
-    /* Video pages optimization for 1200x800 */
+    /* Video pages optimization for 1280x800 */
     .video-page {
       padding: 8px !important;
     }
@@ -512,3 +510,40 @@
     @apply bg-background text-foreground;
   }
 } 
+
+     /* Keyboard handling for contact form */
+     .contact-page.keyboard-active {
+       padding-bottom: 280px !important;
+     }
+     
+     .contact-page.keyboard-active .focused-input {
+       transform: translateY(-120px) !important;
+       transition: transform 0.3s ease-in-out !important;
+     }
+     
+     /* Enhanced visual feedback for tablet interactions */
+     .contact-page input:focus {
+       box-shadow: 0 0 0 3px rgba(0, 112, 224, 0.2) !important;
+       border-color: #0070E0 !important;
+       outline: none !important;
+     }
+     
+     .contact-page .focused-input input {
+       background-color: rgba(255, 255, 255, 0.08) !important;
+     }
+     
+     /* Smooth transitions for all contact form elements */
+     .contact-page * {
+       transition: all 0.2s ease-in-out !important;
+     }
+     
+     /* Reduced motion for users who prefer it */
+     @media (prefers-reduced-motion: reduce) {
+       .contact-page * {
+         transition: none !important;
+       }
+       
+       .contact-page.keyboard-active .focused-input {
+         transform: none !important;
+       }
+     } 
