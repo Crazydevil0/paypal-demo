@@ -129,3 +129,53 @@ export function useBatteryStatus(): BatteryStatus {
 
   return batteryStatus
 }
+
+// Export a function to get cache status
+export const useCacheStatus = () => {
+  const [cacheStatus, setCacheStatus] = useState<{
+    cacheSize: number
+    cachedAssets: string[]
+    cachedVideos: string[]
+    cachedStatic: string[]
+    videoCacheSize: number
+    assetCacheSize: number
+    staticCacheSize: number
+  } | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  const updateCacheStatus = async () => {
+    try {
+      // Import the service worker manager
+      const { serviceWorkerManager } = await import('@/lib/service-worker')
+      const status = await serviceWorkerManager.getCacheStatus()
+      setCacheStatus(status)
+    } catch (error) {
+      console.error('Failed to get cache status:', error)
+      setCacheStatus(null)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const cacheVideos = async () => {
+    try {
+      const { serviceWorkerManager } = await import('@/lib/service-worker')
+      await serviceWorkerManager.cacheVideos()
+      // Refresh cache status after caching
+      setTimeout(() => updateCacheStatus(), 1000)
+    } catch (error) {
+      console.error('Failed to cache videos:', error)
+    }
+  }
+
+  useEffect(() => {
+    updateCacheStatus()
+  }, [])
+
+  return {
+    cacheStatus,
+    loading,
+    updateCacheStatus,
+    cacheVideos
+  }
+}

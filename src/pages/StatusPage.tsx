@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { offlineStorage } from '@/lib/offline-storage';
 import { CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import CacheStatus from '@/components/ui/CacheStatus';
 
 export default function StatusPage() {
   const [stats, setStats] = useState<null | {
@@ -37,7 +38,7 @@ export default function StatusPage() {
   const percentSynced = stats.totalJourneys === 0 ? 100 : Math.round((stats.syncedJourneys / stats.totalJourneys) * 100);
 
   return (
-    <div className="max-w-xl mx-auto py-16 px-4">
+    <div className="max-w-xl mx-auto py-16 px-4 space-y-6">
       <Card className="shadow-xl border-2 border-blue-100">
         <CardHeader className="flex flex-col items-center gap-2 pb-2">
           <CardTitle className="text-3xl font-bold tracking-tight">Sync Status</CardTitle>
@@ -104,6 +105,9 @@ export default function StatusPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Cache Status Card */}
+      <CacheStatus />
     </div>
   );
 } 

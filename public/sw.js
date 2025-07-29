@@ -1,6 +1,7 @@
 // Service Worker for PayPal Demo - Asset Caching for Offline Use
 const CACHE_NAME = 'paypal-demo-assets-v1'
 const STATIC_CACHE_NAME = 'paypal-demo-static-v1'
+const VIDEO_CACHE_NAME = 'paypal-demo-videos-v1'
 
 // Assets to cache immediately when service worker installs
 const STATIC_ASSETS = [
@@ -69,11 +70,46 @@ self.addEventListener('fetch', (event) => {
     return
   }
   
+  // Check if this is a video file
+  const isVideo = /\.(?:mp4|mov|webm|ogg)$/.test(url.pathname)
+  
   // Check if this is an asset we want to cache
   const isAsset = ASSET_PATTERNS.some(pattern => pattern.test(url.pathname))
   
-  if (isAsset) {
-    // Cache-first strategy for assets
+  if (isVideo) {
+    // Special caching strategy for videos
+    event.respondWith(
+      caches.open(VIDEO_CACHE_NAME)
+        .then((cache) => {
+          return cache.match(request)
+            .then((cachedResponse) => {
+              if (cachedResponse) {
+                console.log('[SW] Serving video from cache:', url.pathname)
+                return cachedResponse
+              }
+              
+              // Not in cache, fetch and cache video
+              console.log('[SW] Fetching and caching video:', url.pathname)
+              return fetch(request)
+                .then((response) => {
+                  // Only cache successful responses
+                  if (response.status === 200) {
+                    const responseClone = response.clone()
+                    cache.put(request, responseClone)
+                    console.log('[SW] Video cached successfully:', url.pathname)
+                  }
+                  return response
+                })
+                .catch((error) => {
+                  console.error('[SW] Video fetch failed for:', url.pathname, error)
+                  // For videos, we want to fail gracefully
+                  throw error
+                })
+            })
+        })
+    )
+  } else if (isAsset) {
+    // Cache-first strategy for other assets
     event.respondWith(
       caches.open(CACHE_NAME)
         .then((cache) => {
@@ -129,6 +165,12 @@ self.addEventListener('message', (event) => {
         cacheAssets(assets)
         break
       
+      case 'CACHE_VIDEOS':
+        // Preload video assets
+        const videos = event.data.videos || []
+        cacheVideos(videos)
+        break
+      
       case 'CLEAR_CACHE':
         // Clear all caches
         clearAllCaches()
@@ -166,6 +208,28 @@ async function cacheAssets(assets) {
   }
 }
 
+// Helper function to cache videos
+async function cacheVideos(videoUrls = []) {
+  try {
+    const cache = await caches.open(VIDEO_CACHE_NAME)
+    console.log('[SW] Preloading video assets:', videoUrls)
+    
+    for (const videoUrl of videoUrls) {
+      try {
+        const response = await fetch(videoUrl)
+        if (response.status === 200) {
+          await cache.put(videoUrl, response)
+          console.log('[SW] Preloaded video asset:', videoUrl)
+        }
+      } catch (error) {
+        console.warn('[SW] Failed to preload video asset:', videoUrl, error)
+      }
+    }
+  } catch (error) {
+    console.error('[SW] Failed to cache videos:', error)
+  }
+}
+
 // Helper function to clear all caches
 async function clearAllCaches() {
   try {
@@ -182,16 +246,37 @@ async function clearAllCaches() {
 // Helper function to get cache status
 async function getCacheStatus() {
   try {
-    const cache = await caches.open(CACHE_NAME)
-    const requests = await cache.keys()
-    const cachedAssets = requests.map(req => req.url)
+    const assetCache = await caches.open(CACHE_NAME)
+    const videoCache = await caches.open(VIDEO_CACHE_NAME)
+    const staticCache = await caches.open(STATIC_CACHE_NAME)
+    
+    const assetRequests = await assetCache.keys()
+    const videoRequests = await videoCache.keys()
+    const staticRequests = await staticCache.keys()
+    
+    const cachedAssets = assetRequests.map(req => req.url)
+    const cachedVideos = videoRequests.map(req => req.url)
+    const cachedStatic = staticRequests.map(req => req.url)
     
     return {
-      cacheSize: cachedAssets.length,
-      cachedAssets: cachedAssets
+      cacheSize: cachedAssets.length + cachedVideos.length + cachedStatic.length,
+      cachedAssets: cachedAssets,
+      cachedVideos: cachedVideos,
+      cachedStatic: cachedStatic,
+      videoCacheSize: cachedVideos.length,
+      assetCacheSize: cachedAssets.length,
+      staticCacheSize: cachedStatic.length
     }
   } catch (error) {
     console.error('[SW] Failed to get cache status:', error)
-    return { cacheSize: 0, cachedAssets: [] }
+    return { 
+      cacheSize: 0, 
+      cachedAssets: [], 
+      cachedVideos: [], 
+      cachedStatic: [],
+      videoCacheSize: 0,
+      assetCacheSize: 0,
+      staticCacheSize: 0
+    }
   }
 } 

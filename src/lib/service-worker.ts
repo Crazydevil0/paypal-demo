@@ -8,6 +8,11 @@ import { MEDIA } from '@/lib/content'
 interface CacheStatus {
   cacheSize: number
   cachedAssets: string[]
+  cachedVideos: string[]
+  cachedStatic: string[]
+  videoCacheSize: number
+  assetCacheSize: number
+  staticCacheSize: number
 }
 
 class ServiceWorkerManager {
@@ -67,18 +72,6 @@ class ServiceWorkerManager {
   }
 
   /**
-   * Preload critical assets for offline use
-   */
-  private async preloadCriticalAssets(): Promise<void> {
-    const criticalAssets = this.getCriticalAssets()
-    
-    if (criticalAssets.length > 0) {
-      console.log('[SW Manager] Preloading critical assets:', criticalAssets.length)
-      await this.cacheAssets(criticalAssets)
-    }
-  }
-
-  /**
    * Get list of critical assets to preload
    */
   private getCriticalAssets(): string[] {
@@ -114,6 +107,31 @@ class ServiceWorkerManager {
   }
 
   /**
+   * Get list of video assets for offline caching
+   */
+  private getVideoAssets(): string[] {
+    return [
+      MEDIA.videos.ppcpCompletePayments,
+      MEDIA.videos.braintreeDemo,
+    ]
+  }
+
+  /**
+   * Preload critical assets for offline use
+   */
+  private async preloadCriticalAssets(): Promise<void> {
+    const criticalAssets = this.getCriticalAssets()
+    
+    if (criticalAssets.length > 0) {
+      console.log('[SW Manager] Preloading critical assets:', criticalAssets.length)
+      await this.cacheAssets(criticalAssets)
+    }
+
+    // Preload videos separately with lower priority
+    this.preloadVideoAssets()
+  }
+
+  /**
    * Cache specific assets
    */
   public async cacheAssets(assets: string[]): Promise<void> {
@@ -131,6 +149,43 @@ class ServiceWorkerManager {
     } catch (error) {
       console.error('[SW Manager] Failed to request asset caching:', error)
     }
+  }
+
+  /**
+   * Cache video assets on demand
+   */
+  public async cacheVideos(): Promise<void> {
+    if (!this.isSupported || !navigator.serviceWorker.controller) {
+      console.warn('[SW Manager] Cannot cache videos - no active service worker')
+      return
+    }
+
+    try {
+      const videoAssets = this.getVideoAssets()
+      navigator.serviceWorker.controller.postMessage({
+        type: 'CACHE_VIDEOS',
+        videos: videoAssets
+      })
+      console.log('[SW Manager] Requested video caching:', videoAssets.length, 'videos')
+    } catch (error) {
+      console.error('[SW Manager] Failed to request video caching:', error)
+    }
+  }
+
+  /**
+   * Preload video assets with lower priority (non-blocking)
+   */
+  private async preloadVideoAssets(): Promise<void> {
+    // Use setTimeout to ensure this doesn't block critical asset loading
+    setTimeout(async () => {
+      try {
+        console.log('[SW Manager] Starting video preload via service worker message')
+        await this.cacheVideos()
+        console.log('[SW Manager] Video preload request sent')
+      } catch (error) {
+        console.warn('[SW Manager] Video preload failed:', error)
+      }
+    }, 2000) // Wait 2 seconds before starting video preload
   }
 
   /**
