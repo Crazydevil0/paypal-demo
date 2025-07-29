@@ -25,7 +25,7 @@ const WelcomeExperience: React.FC = () => {
 
   const handleFullscreen = () => {
     try {
-      document.querySelector("body")?.requestFullscreen();
+      document.documentElement.requestFullscreen();
     } catch (error) {
       console.log('Fullscreen not supported or failed:', error);
     }

@@ -70,16 +70,16 @@ export default function ChallengesExperience() {
     return (
       <motion.div
         key={challenge.id}
-        initial={{ opacity: 0, y: 50 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: index * 0.1 }}
+        transition={{ duration: 0.4, delay: index * 0.05 }}
         className="relative group"
       >
         <Card 
           className={`
-            relative overflow-hidden cursor-pointer transition-all duration-500 border-3 h-full min-h-[200px]
+            relative overflow-hidden cursor-pointer transition-all duration-300 border-2 h-full min-h-[100px]
             ${isSelected 
-              ? 'shadow-2xl scale-105' 
+              ? 'shadow-xl scale-105' 
               : 'border-white/20 hover:scale-102'
             }
             bg-white/10 backdrop-blur-xl hover:bg-white/15
@@ -87,7 +87,7 @@ export default function ChallengesExperience() {
           style={{
             borderColor: isSelected ? colors.paypal.blue : 'rgba(255,255,255,0.2)',
             backgroundColor: imageStyleData?.bgColor + '20',
-            boxShadow: isSelected ? `0 0 0 4px ${colors.paypal.blue}40` : undefined
+            boxShadow: isSelected ? `0 0 0 3px ${colors.paypal.blue}40` : undefined
           }}
           onClick={() => handleChallengeToggle(challenge.id)}
         >
@@ -98,25 +98,25 @@ export default function ChallengesExperience() {
                 initial={{ scale: 0, opacity: 0, rotate: -180 }}
                 animate={{ scale: 1, opacity: 1, rotate: 0 }}
                 exit={{ scale: 0, opacity: 0, rotate: 180 }}
-                className="absolute top-4 right-4 z-20"
+                className="absolute top-1 right-1 z-20"
               >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
+                <div className="w-5 h-5 rounded-full flex items-center justify-center shadow-lg"
                      style={{ backgroundColor: colors.paypal.blue }}>
-                  <CheckCircle2 className="w-5 h-5 text-white" />
+                  <CheckCircle2 className="w-3 h-3 text-white" />
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          <CardContent className="relative z-10 p-8 h-full flex flex-col items-center justify-center text-center">
+          <CardContent className="relative z-10 p-3 h-full flex flex-col items-center justify-center text-center gap-3">
             {/* Icon */}
-            <div className="p-6 rounded-full mb-6 shadow-xl"
+            <div className="p-2 rounded-full shadow-lg"
                  style={{ backgroundColor: 'rgba(255,255,255,0.9)' }}>
-              <IconComponent className="w-16 h-16 text-gray-700" />
+              <IconComponent className="w-8 h-8 text-gray-700" />
             </div>
 
             {/* Main Text */}
-            <p className="text-xl font-bold text-white leading-relaxed">
+            <p className="text-sm font-bold text-white leading-tight">
               {imageStyleData?.text || challenge.description}
             </p>
           </CardContent>
@@ -140,24 +140,24 @@ export default function ChallengesExperience() {
              style={{ backgroundColor: colors.paypal.qrBlue }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-1440 mx-auto px-4 md:px-8 xl:px-16 py-12">
+      <div className="relative z-10 w-full max-w-1200 mx-auto px-4 md:px-6 py-6 h-screen flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          transition={{ duration: 0.4 }}
+          className="text-center mb-6 flex-shrink-0"
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 leading-tight">
             {CHALLENGES_CONTENT.title}
           </h1>
           
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed"
+          <p className="text-lg md:text-xl mb-4 max-w-2xl mx-auto leading-tight"
              style={{ color: colors.paypal.lightBlue }}>
             {CHALLENGES_CONTENT.subtitle}
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-h-[400px]">
           {CHALLENGES_CONTENT.options.map((challenge, index) => {
             return renderCard(challenge, index)
           })}
@@ -165,18 +165,19 @@ export default function ChallengesExperience() {
 
         {/* Continue Button */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="text-center mt-12"
+          transition={{ delay: 0.4, duration: 0.4 }}
+          className="text-center mt-6 flex-shrink-0"
         >
           <Button
             onClick={handleContinue}
             variant="paypal-primary"
             disabled={selectedChallenges.length === 0}
+            className="px-6 py-2"
           >
             Avançar
-            <ArrowRight className="ml-2 w-5 h-5" />
+            <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
         </motion.div>
       </div>

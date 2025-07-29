@@ -36,7 +36,7 @@ export default function BraintreeVideoExperience() {
 
   return (
     <div 
-      className={backgroundStyle.className}
+      className={`${backgroundStyle.className} video-page`}
       style={backgroundStyle.style}
     >
       {/* Animated Background */}
